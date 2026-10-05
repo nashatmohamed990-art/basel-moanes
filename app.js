@@ -25,9 +25,12 @@ function minutes(value) {
   return 0;
 }
 function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, (ch) => ({
-    "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;"
-  }[ch]));
+  return String(value)
+    .replace(/&/g, "&")
+    .replace(/</g, "<")
+    .replace(/>/g, ">")
+    .replace(/"/g, "\"")
+    .replace(/'/g, "&#39;")
 }
 function kindLabel(item) { return item.kind === "lesson" ? "مجلس تدبر" : "تلاوة"; }
 function card(item) {
