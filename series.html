@@ -52,7 +52,19 @@
     <button type="button" id="resume-play">أكمل: <span id="resume-title"></span></button>
     <button type="button" id="resume-hide" aria-label="إخفاء">×</button>
   </div>
-  <dialog id="player">
+  <div class="dock" id="dock" hidden>
+  <div class="dock-top"><strong id="dock-title"></strong><button type="button" id="dock-close" aria-label="إغلاق">×</button></div>
+  <input id="dock-seek" type="range" min="0" max="1000" value="0" aria-label="التقدم">
+  <div class="dock-time"><span id="dock-now">٠:٠٠</span><span id="dock-end">٠:٠٠</span></div>
+  <div class="dock-controls">
+    <button type="button" id="dock-repeat" aria-label="تكرار">↻</button>
+    <button type="button" id="dock-prev" aria-label="السابق">⟨</button>
+    <button type="button" id="dock-play" aria-label="تشغيل">▶</button>
+    <button type="button" id="dock-next" aria-label="التالي">⟩</button>
+    <button type="button" id="dock-speed">×١</button>
+  </div>
+</div>
+<dialog id="player">
     <div class="player-bar"><strong id="player-title"></strong><span><button type="button" id="player-next" aria-label="التالي">⟩</button><button type="button" id="player-close" onclick="this.closest('dialog').close()" aria-label="إغلاق">×</button></span></div>
     <iframe class="player-frame" id="player-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
   </dialog>

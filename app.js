@@ -85,37 +85,106 @@ function itemsFor(id) {
   if (id === "lessons") return videos().filter((i) => i.kind === "lesson");
   return videos().filter((i) => (i.lists || []).includes(id));
 }
+
+let repeatMode = "off";
+let speed = 1;
+function clock(value) {
+  const sec = Math.max(0, Math.floor(value || 0));
+  return ar.format(Math.floor(sec / 60)) + ":" + ar.format(sec % 60).padStart(2, "٠");
+}
+function audioQueue() { return allItems().filter((item) => item.audio || item.external); }
+function ensureAudio() {
+  let audio = document.getElementById("player-audio");
+  if (!audio) {
+    audio = document.createElement("audio");
+    audio.id = "player-audio";
+    document.body.appendChild(audio);
+  }
+  audio.controls = false;
+  return audio;
+}
+function showDock(title) {
+  const dock = document.getElementById("dock");
+  if (!dock) return;
+  dock.hidden = false;
+  document.getElementById("dock-title").textContent = title;
+  if (player?.open) player.close();
+}
+function playSrc(src, title) {
+  const audio = ensureAudio();
+  showDock(title);
+  audio.src = src;
+  audio.playbackRate = speed;
+  audio.play().catch(function () {});
+  document.getElementById("dock-play").textContent = "Ⅱ";
+}
+function stepAudio(dir) {
+  const queue = audioQueue();
+  const index = queue.findIndex((item) => item.id === currentId);
+  const next = queue[index + dir] || queue[dir > 0 ? 0 : queue.length - 1];
+  if (next) openItem(next.id);
+}
+function bindDock() {
+  const audio = ensureAudio();
+  const play = document.getElementById("dock-play");
+  const seek = document.getElementById("dock-seek");
+  if (!play || play.dataset.bound) return;
+  play.dataset.bound = "1";
+  play.addEventListener("click", () => { if (audio.paused) audio.play(); else audio.pause(); });
+  document.getElementById("dock-next")?.addEventListener("click", () => stepAudio(1));
+  document.getElementById("dock-prev")?.addEventListener("click", () => stepAudio(-1));
+  document.getElementById("dock-close")?.addEventListener("click", () => {
+    audio.pause(); audio.removeAttribute("src");
+    document.getElementById("dock").hidden = true;
+    currentId = ""; renderResume();
+  });
+  document.getElementById("dock-repeat")?.addEventListener("click", (event) => {
+    repeatMode = repeatMode === "off" ? "one" : repeatMode === "one" ? "all" : "off";
+    event.currentTarget.classList.toggle("on", repeatMode !== "off");
+    event.currentTarget.textContent = repeatMode === "one" ? "1" : "↻";
+  });
+  document.getElementById("dock-speed")?.addEventListener("click", (event) => {
+    speed = speed === 1 ? 1.25 : speed === 1.25 ? 1.5 : 1;
+    audio.playbackRate = speed;
+    event.currentTarget.textContent = "×" + ar.format(speed);
+  });
+  seek?.addEventListener("input", () => { if (audio.duration) audio.currentTime = audio.duration * (seek.value / 1000); });
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration || !seek) return;
+    seek.value = Math.floor((audio.currentTime / audio.duration) * 1000);
+    document.getElementById("dock-now").textContent = clock(audio.currentTime);
+    document.getElementById("dock-end").textContent = clock(audio.duration);
+  });
+  audio.addEventListener("play", () => { play.textContent = "Ⅱ"; });
+  audio.addEventListener("pause", () => { play.textContent = "▶"; });
+  audio.addEventListener("ended", () => {
+    if (repeatMode === "one") { audio.currentTime = 0; audio.play(); return; }
+    if (repeatMode === "off") {
+      const queue = audioQueue();
+      if (queue.findIndex((item) => item.id === currentId) === queue.length - 1) return;
+    }
+    stepAudio(1);
+  });
+}
+
 function openItem(id) {
   const item = byId(id);
   if (!item) return;
-  if (item.external) {
+  if (item.external || item.audio) {
     currentId = id;
     save(LAST_KEY, id);
-    playerTitle.textContent = item.title;
+    bindDock();
     frame.hidden = true;
     frame.removeAttribute("src");
-    let audio = document.getElementById("player-audio");
-    if (!audio) {
-      audio = document.createElement("audio");
-      audio.id = "player-audio";
-      audio.controls = true;
-      audio.autoplay = true;
-      frame.insertAdjacentElement("afterend", audio);
+    if (item.audio) playSrc(item.audio, item.title);
+    else {
+      showDock(item.title);
+      const recitation = item.external.split("/").pop();
+      fetch("/api/midad?id=" + encodeURIComponent(recitation))
+        .then((response) => response.json())
+        .then((data) => { if (!data.url) throw new Error("missing"); playSrc(data.url, item.title); })
+        .catch(function () { document.getElementById("dock-title").textContent = item.title + " — تعذر التشغيل"; });
     }
-    audio.hidden = false;
-    audio.removeAttribute("src");
-    if (!player.open) player.showModal();
-    const recitation = item.external.split("/").pop();
-    fetch("/api/midad?id=" + encodeURIComponent(recitation))
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.url) throw new Error("missing");
-        audio.src = data.url;
-        audio.play().catch(function () {});
-      })
-      .catch(function () {
-        playerTitle.textContent = item.title + " — تعذر تشغيل التسجيل";
-      });
     renderResume();
     return;
   }
@@ -123,20 +192,7 @@ function openItem(id) {
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
   let audio = document.getElementById("player-audio");
-  if (item.audio) {
-    frame.hidden = true;
-    frame.removeAttribute("src");
-    if (!audio) {
-      audio = document.createElement("audio");
-      audio.id = "player-audio";
-      audio.controls = true;
-      audio.autoplay = true;
-      frame.insertAdjacentElement("afterend", audio);
-    }
-    audio.hidden = false;
-    audio.src = item.audio;
-    audio.play().catch(function () {});
-  } else {
+  if (false) {
     if (audio) { audio.pause(); audio.hidden = true; audio.removeAttribute("src"); }
     frame.hidden = false;
     frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
@@ -319,6 +375,7 @@ document.querySelectorAll(".chip[data-filter]").forEach((chip) => {
   });
 });
 document.getElementById("q")?.addEventListener("input", renderSearch);
+bindDock();
 document.getElementById("player-next")?.addEventListener("click", () => {
   const items = allItems();
   const index = items.findIndex((item) => item.id === currentId);
