@@ -63,7 +63,6 @@ const SERIES = [
   { id: "lessons", title: "دروس متفرقة", kicker: "دروس", count: "15 درس", blurb: "دروس ووقفات من القناة.", image: "AZNnQhRHdFA" },
   { id: "sadaq", title: "وصدق الله ورسوله", kicker: "سلسلة", count: "3 حلقات", blurb: "سلسلة وصدق الله ورسوله.", image: "I8ttP8KFM48" },
   { id: "clips", title: "مقاطع", kicker: "مقاطع", count: "5 مقاطع", blurb: "مقاطع قصيرة من القناة.", image: "Lpmq1uj7tJc" },
-  { id: "midad", title: "مصحف مداد", kicker: "صوت", count: "70 سورة", blurb: "التسجيلات كما نشرت على مداد.", image: "" },
   { id: "morning", title: "أذكار الصباح", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد الفجر حتى الضحى.", href: "practice.html#morning" },
   { id: "evening", title: "أذكار المساء", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد العصر إلى الليل.", href: "practice.html#evening" },
   { id: "tasbih", title: "السبحة", kicker: "عدّ", count: "٣٣ / ١٠٠", blurb: "سبحان الله، والحمد، والتكبير.", href: "practice.html#tasbih" }
@@ -92,7 +91,7 @@ function clock(value) {
   const sec = Math.max(0, Math.floor(value || 0));
   return ar.format(Math.floor(sec / 60)) + ":" + ar.format(sec % 60).padStart(2, "٠");
 }
-function audioQueue() { return allItems().filter((item) => item.audio || item.external); }
+function audioQueue() { return allItems().filter((item) => item.audio); }
 function ensureAudio() {
   let audio = document.getElementById("player-audio");
   if (!audio) {
@@ -170,33 +169,26 @@ function bindDock() {
 function openItem(id) {
   const item = byId(id);
   if (!item) return;
-  if (item.external || item.audio) {
+  if (item.audio) {
     currentId = id;
     save(LAST_KEY, id);
     bindDock();
     frame.hidden = true;
     frame.removeAttribute("src");
-    if (item.audio) playSrc(item.audio, item.title);
-    else {
-      showDock(item.title);
-      const recitation = item.external.split("/").pop();
-      fetch("/api/midad?id=" + encodeURIComponent(recitation))
-        .then((response) => response.json())
-        .then((data) => { if (!data.url) throw new Error("missing"); playSrc(data.url, item.title); })
-        .catch(function () { document.getElementById("dock-title").textContent = item.title + " — تعذر التشغيل"; });
-    }
+    if (player?.open) player.close();
+    playSrc(item.audio, item.title);
     renderResume();
     return;
   }
   currentId = id;
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
-  let audio = document.getElementById("player-audio");
-  if (false) {
-    if (audio) { audio.pause(); audio.hidden = true; audio.removeAttribute("src"); }
-    frame.hidden = false;
-    frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
-  }
+  const dock = document.getElementById("dock");
+  if (dock) dock.hidden = true;
+  const audio = document.getElementById("player-audio");
+  if (audio) { audio.pause(); audio.removeAttribute("src"); }
+  frame.hidden = false;
+  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
   if (!player.open) player.showModal();
   renderResume();
 }
