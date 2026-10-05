@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>باسل مؤنس | صدقة جارية</title>
+  <meta name="description" content="تلاوات وخطب ودروس المهندس باسل مؤنس رحمه الله، تُنشَر ليُنتفَع بها صدقةً جارية." />
+  <meta name="theme-color" content="#14302a" />
+  <meta property="og:title" content="باسل مؤنس | صدقة جارية" />
+  <meta property="og:description" content="مساحة يبقى فيها صوته: تلاوات وخطب ودروس في القرآن." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://basel-moanes.vercel.app" />
+  <meta property="og:image" content="https://basel-moanes.vercel.app/hero.jpg" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%2314302a' width='64' height='64'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34' fill='%23e7d3ae' font-family='serif'%3Eب%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=6" />
+  <style>
+    @media (max-width: 900px) {
+      .nav-cta { display: none !important; }
+      .menu-btn { display: inline-flex !important; }
+      .nav nav { display: none; }
+      .nav.open nav { display: flex; }
+      .hero, .section-head, .add, .about, .grid, .featured-card, .tasbih, .dhikr { grid-template-columns: 1fr !important; }
+      .add form { display: flex !important; flex-direction: column !important; }
+      .add form input, .add form select, .add form button { width: 100% !important; }
+      .stats { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; text-align: center; }
+      .stats strong, .stats span { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="nav">
+    <a class="brand" href="#top">
+      <span class="mark">ب</span>
+      <span>
+        <strong>باسل مؤنس</strong>
+        <small>رحمه الله</small>
+      </span>
+    </a>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav">القائمة</button>
+    <nav id="site-nav">
+      <a href="#listen">التلاوات</a>
+      <a href="#morning">أذكار الصباح</a>
+      <a href="#evening">أذكار المساء</a>
+      <a href="#other">أذكار</a>
+      <a href="#tasbih">السبحة</a>
+    </nav>
+    <a class="nav-cta" href="#listen">استمع</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">صدقة جارية</p>
+        <h1>مساحة يبقى فيها صوت باسل مؤنس</h1>
+        <p class="lede">تلاواته ودروسه كما نُشرت، ومعها أذكار الصباح والمساء وسبحة تُدار باليد. كل ذلك ليُنتفَع به صدقةً جارية.</p>
+        <p class="ayah">﴿وَمَنْ أَحْسَنُ قَوْلًا مِّمَّن دَعَا إِلَى اللَّهِ وَعَمِلَ صَالِحًا وَقَالَ إِنَّنِي مِنَ الْمُسْلِمِينَ﴾</p>
+        <div class="hero-actions">
+          <button class="btn solid" type="button" data-play="re9whwL7Oik">ابدأ بسورة التوبة</button>
+          <a class="btn ghost" href="#morning">أذكار الصباح</a>
+        </div>
+      </div>
+      <figure class="hero-fig">
+        <img src="hero.jpg" alt="مصحف على رحل في مسجد هادئ" onerror="this.remove()" />
+        <figcaption>
+          <span>إنا لله وإنا إليه راجعون</span>
+          <small>قناة باسل مؤنس · ٣٩ ألف مشترك</small>
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="stats" aria-label="لمحة">
+      <div><strong data-count="tilawa">—</strong><span>تلاوة</span></div>
+      <div><strong data-count="shown">—</strong><span>تُشغَّل هنا</span></div>
+      <div><strong data-count="lessons">—</strong><span>درس وتدبر</span></div>
+    </section>
+
+    <section class="featured" id="featured" hidden>
+      <button class="featured-card" type="button" data-play="re9whwL7Oik">
+        <img alt="" />
+        <div>
+          <p class="eyebrow">يُستمع إليه كثيرًا</p>
+          <h2></h2>
+          <p class="muted"></p>
+        </div>
+        <span class="btn solid">تشغيل</span>
+      </button>
+    </section>
+
+    <section class="browse" id="listen">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">المكتبة</p>
+          <h2>اختر سورة، أو ارجع لما بدأته</h2>
+        </div>
+        <div class="tools">
+          <label class="search">
+            <span class="sr">ابحث</span>
+            <input id="q" type="search" placeholder="ابحث: يس، الرحمن، تدبر…" />
+          </label>
+          <label class="sort">
+            <span class="sr">الترتيب</span>
+            <select id="sort">
+              <option value="featured">الأبرز أولًا</option>
+              <option value="short">الأقصر أولًا</option>
+              <option value="long">الأطول أولًا</option>
+              <option value="name">أبجديًا</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="filters" role="tablist">
+        <button class="chip on" data-filter="all">الكل</button>
+        <button class="chip" data-filter="tilawa">التلاوات</button>
+        <button class="chip" data-filter="lesson">الخطب والدروس</button>
+        <button class="chip" data-filter="short">أقل من ١٠ دقائق</button>
+        <button class="chip" data-filter="saved">المحفوظ</button>
+      </div>
+      <div id="grid" class="grid"></div>
+      <p id="empty" class="empty" hidden>لا توجد نتائج. جرّب اسم سورة، أو أضف رابطًا من الأسفل.</p>
+    </section>
+
+    <section id="lessons" class="band tight">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">الخطب والدروس</p>
+          <h2>مجالس التدبر وما بقي من أثره</h2>
+          <p>مجالس سورة القصص، ودرس «كيف نتدبر القرآن؟»، وسلسلة «سمعنا وأطعنا»، نُشرت على قناة إنه القرآن.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="adhkar-block" id="morning">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">وحدها</p>
+          <h2>أذكار الصباح</h2>
+          <p>اضغط الذكر ليزيد العدّاد. يُحفظ تقدم اليوم على هذا الجهاز، ويبدأ من جديد في يوم جديد.</p>
+        </div>
+        <button class="btn ghost" type="button" data-reset="morning">صفّر الصباح</button>
+      </div>
+      <div id="morning-list" class="dhikr-list"></div>
+    </section>
+
+    <section class="adhkar-block" id="evening">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">وحدها</p>
+          <h2>أذكار المساء</h2>
+          <p>من بعد العصر إلى الليل. كل بطاقة تُغلق حين يكتمل عددها.</p>
+        </div>
+        <button class="btn ghost" type="button" data-reset="evening">صفّر المساء</button>
+      </div>
+      <div id="evening-list" class="dhikr-list"></div>
+    </section>
+
+    <section class="adhkar-block" id="other">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">أذكار أخرى</p>
+          <h2>بعد الصلاة، واستغفار، ودعاء</h2>
+          <p>تسبيح ما بعد الصلاة، واستغفار، وصلاة على النبي، وأدعية قصيرة تُقال في موضعها.</p>
+        </div>
+        <button class="btn ghost" type="button" data-reset="other">صفّر هذه</button>
+      </div>
+      <div id="other-list" class="dhikr-list"></div>
+    </section>
+
+    <section class="tasbih" id="tasbih">
+      <div>
+        <p class="eyebrow">السبحة</p>
+        <h2>عدّ بيدك</h2>
+        <p class="muted">اختر الذكر، ثم اضغط الدائرة. عند اكتمال الهدف تهتز إن سمح الجهاز، ويبدأ العدّ من جديد.</p>
+        <div class="tasbih-phrases" id="tasbih-phrases"></div>
+        <div class="tasbih-targets">
+          <button type="button" data-target="33">٣٣</button>
+          <button type="button" data-target="100" class="on">١٠٠</button>
+          <button type="button" data-target="0">بلا حد</button>
+        </div>
+      </div>
+      <div class="bead-wrap">
+        <button class="bead" id="bead" type="button" aria-label="سبحة">
+          <strong id="bead-count">٠</strong>
+          <span id="bead-label">سبحان الله</span>
+        </button>
+        <button class="btn ghost" id="bead-reset" type="button">صفّر السبحة</button>
+      </div>
+    </section>
+
+    <section class="add" id="add">
+      <div>
+        <p class="eyebrow">أضف أثرًا وجدته</p>
+        <h2>رابط يوتيوب جديد</h2>
+        <p>يُحفظ على هذا الجهاز فورًا. إن أردت أن يظهر للجميع، أرسل الرابط لمن يتولى الموقع ليُضاف إلى المكتبة العامة.</p>
+      </div>
+      <form id="add-form">
+        <input name="title" required placeholder="العنوان: خطبة الجمعة — الفاتحة" />
+        <input name="url" required placeholder="رابط يوتيوب" inputmode="url" />
+        <select name="kind">
+          <option value="tilawa">تلاوة</option>
+          <option value="lesson">خطبة أو درس</option>
+        </select>
+        <button class="btn solid" type="submit">أضف إلى مكتبتي</button>
+        <p id="add-note" class="note" role="status"></p>
+      </form>
+    </section>
+
+    <section class="about" id="about">
+      <div>
+        <p class="eyebrow">عنه</p>
+        <h2>المهندس باسل مؤنس</h2>
+        <p>رحمه الله. ترك تلاوات هادئة لسور من القرآن، ودروسًا في التدبر، نُشرت على قناته وعلى قناة إنه القرآن. هذه الصفحة تجمع ما أمكن التحقق من روابطه، ليستبدل التشتت بمكان واحد يُرجع إليه.</p>
+        <p>القناة نفسها تصف عملها بإحياء إرثه، وتسأل الله أن يجعل القرآن نوره وأنيسه.</p>
+        <p class="links">
+          <a href="https://www.youtube.com/@BaselMoanes" target="_blank" rel="noopener">القناة</a>
+          <a href="https://www.youtube.com/playlist?list=PLv-yDZ0vS3W7U6GXvMw0tRHTbZr67bnIw" target="_blank" rel="noopener">قائمة التلاوات</a>
+          <a href="https://www.youtube.com/@ennahoalquran" target="_blank" rel="noopener">إنه القرآن</a>
+        </p>
+      </div>
+      <blockquote>
+        اللهم اغفر له وارحمه، وعافه واعف عنه، وأكرم نزله، ووسّع مدخله، واغسله بالماء والثلج والبرد، ونقّه من الخطايا كما ينقّى الثوب الأبيض من الدنس.
+      </blockquote>
+    </section>
+
+    <section class="dua" id="dua">
+      <p class="eyebrow">الدعاء</p>
+      <h2>صدقة له ولمن أحب</h2>
+      <p id="dua-text">اللهم اجعل ما يُستمع من تلاوة باسل مؤنس ودرسه صدقة جارية له، وانفع به سامعه، واجزه عن القرآن خيرًا، واجمعنا به في ظل عرشك يوم لا ظل إلا ظلك.</p>
+      <button class="btn ghost" id="copy-dua" type="button">انسخ الدعاء</button>
+    </section>
+  </main>
+
+  <footer>
+    <span>صدقة جارية عن باسل مؤنس · رحمه الله</span>
+    <span>© <span id="year"></span> · يُنتفَع به ولا يُباع</span>
+  </footer>
+
+  <div class="resume" id="resume" hidden>
+    <button type="button" id="resume-play">أكمل: <span id="resume-title"></span></button>
+    <button type="button" id="resume-hide" aria-label="إخفاء">×</button>
+  </div>
+
+  <dialog id="player">
+    <form method="dialog" class="player-bar">
+      <strong id="player-title"></strong>
+      <div class="player-actions">
+        <button type="button" id="player-next">التالي</button>
+        <button value="cancel" aria-label="إغلاق">إغلاق</button>
+      </div>
+    </form>
+    <div class="frame-wrap">
+      <iframe id="player-frame" title="تشغيل" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </dialog>
+
+  <script src="catalog.js?v=6"></script>
+  <script src="adhkar.js?v=6"></script>
+  <script src="app.js?v=6"></script>
+</body>
+</html>
