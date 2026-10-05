@@ -56,9 +56,13 @@ function row(item) {
   </article>`;
 }
 const SERIES = [
-  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "7 تسجيلات", blurb: "سور بصوته، ملفات صوتية على الموقع.", image: "" },
-  { id: "tilawa", title: "فيديوهات التلاوة", kicker: "يوتيوب", count: "13 تلاوة", blurb: "سور كما نُشرت على يوتيوب.", image: "re9whwL7Oik" },
-  { id: "lessons", title: "مجالس التدبر", kicker: "سلسلة", count: "7 مجالس", blurb: "مجالس القصص، وكيف نتدبر القرآن، وسمعنا وأطعنا.", image: "XZU50DA4_1I" },
+  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "7 تسجيلات", blurb: "ملفات صوتية على الموقع.", image: "" },
+  { id: "tilawa", title: "تلاوات يوتيوب", kicker: "يوتيوب", count: "73 تلاوة", blurb: "قائمة التلاوات على القناة.", image: "re9whwL7Oik" },
+  { id: "qasas", title: "تدبر سورة القصص", kicker: "سلسلة", count: "11 مجلس", blurb: "سلسلة تدبر سورة القصص.", image: "xMwATKRljuc" },
+  { id: "tadabbur", title: "تدبر", kicker: "سلسلة", count: "14 حلقة", blurb: "تدبر قصار السور.", image: "wuGaXVbdo4w" },
+  { id: "lessons", title: "دروس متفرقة", kicker: "دروس", count: "15 درس", blurb: "دروس ووقفات من القناة.", image: "AZNnQhRHdFA" },
+  { id: "sadaq", title: "وصدق الله ورسوله", kicker: "سلسلة", count: "3 حلقات", blurb: "سلسلة وصدق الله ورسوله.", image: "I8ttP8KFM48" },
+  { id: "clips", title: "مقاطع", kicker: "مقاطع", count: "5 مقاطع", blurb: "مقاطع قصيرة من القناة.", image: "Lpmq1uj7tJc" },
   { id: "morning", title: "أذكار الصباح", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد الفجر حتى الضحى.", href: "practice.html#morning" },
   { id: "evening", title: "أذكار المساء", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد العصر إلى الليل.", href: "practice.html#evening" },
   { id: "tasbih", title: "السبحة", kicker: "عدّ", count: "٣٣ / ١٠٠", blurb: "سبحان الله، والحمد، والتكبير.", href: "practice.html#tasbih" }
@@ -76,9 +80,9 @@ function audios() { return allItems().filter((i) => i.audio); }
 function videos() { return allItems().filter((i) => !i.audio); }
 function itemsFor(id) {
   if (id === "audio") return audios();
-  if (id === "tilawa") return videos().filter((i) => i.kind === "tilawa");
+  if (id === "tilawa") return videos().filter((i) => (i.lists || []).includes("tilawa") || (i.kind === "tilawa" && !i.audio));
   if (id === "lessons") return videos().filter((i) => i.kind === "lesson");
-  return [];
+  return videos().filter((i) => (i.lists || []).includes(id));
 }
 function openItem(id) {
   const item = byId(id);
