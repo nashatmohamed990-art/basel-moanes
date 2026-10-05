@@ -1,4 +1,12 @@
 const CATALOG = [
+  { id: 'audio-qiyamah', title: 'تلاوة سورة القيامة', kind: "tilawa", duration: '3:08', audio: "audio/surat-al-qiyamah.mp3", note: "من مداد" },
+  { id: 'audio-muddathir', title: 'تلاوة سورة المدثر', kind: "tilawa", duration: '6:27', audio: "audio/surat-al-muddathir.mp3", note: "من مداد" },
+  { id: 'audio-muzzammil', title: 'تلاوة سورة المزمل', kind: "tilawa", duration: '4:39', audio: "audio/surat-al-muzzammil.mp3", note: "من مداد" },
+  { id: 'audio-haqqah', title: 'تلاوة سورة الحاقة', kind: "tilawa", duration: '7:30', audio: "audio/surat-al-haqqah.mp3", note: "من مداد" },
+  { id: 'audio-qalam', title: 'تلاوة سورة القلم', kind: "tilawa", duration: '7:25', audio: "audio/surat-al-qalam.mp3", note: "من مداد" },
+  { id: 'audio-mulk', title: 'تلاوة سورة الملك', kind: "tilawa", duration: '6:36', audio: "audio/surat-al-mulk.mp3", note: "من مداد" },
+  { id: 'audio-taghabun', title: 'تلاوة سورة التغابن', kind: "tilawa", duration: '5:25', audio: "audio/surat-at-taghabun.mp3", note: "من مداد" },
+  { id: 'audio-jumuah', title: 'تلاوة سورة الجمعة', kind: "tilawa", duration: '5:53', audio: "audio/surat-al-jumuah.mp3", note: "من مداد" },
   { id: 'audio-fatihah', title: 'تلاوة سورة الفاتحة', kind: "tilawa", duration: '0:44', audio: "audio/surat-al-fatihah.mp3", note: "من مداد" },
   { id: 'audio-naba', title: 'تلاوة سورة النبأ', kind: "tilawa", duration: '4:49', audio: "audio/surat-an-naba.mp3", note: "من مداد" },
   { id: 'audio-infitar', title: 'تلاوة سورة الانفطار', kind: "tilawa", duration: '1:56', audio: "audio/surat-al-infitar.mp3", note: "من مداد" },
