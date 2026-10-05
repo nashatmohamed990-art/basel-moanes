@@ -17,7 +17,7 @@ function savedIds() { return new Set(load(SAVED_KEY) || []); }
 function extras() { return load(EXTRA_KEY) || []; }
 function allItems() { return CATALOG.concat(extras()); }
 function byId(id) { return allItems().find((item) => item.id === id); }
-function thumb(id) { const item = byId(id); if (item && item.audio) return "hero.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+function thumb(id) { const item = byId(id); if (item && item.audio) return "basel.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
 function minutes(value) {
   const parts = String(value || "0").split(":").map(Number);
   if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
@@ -65,7 +65,7 @@ const SERIES = [
 ];
 function seriesTile(s) {
   const href = s.href || ("series.html?s=" + s.id);
-  const img = s.image ? thumb(s.image) : "hero.jpg";
+  const img = s.image ? thumb(s.image) : "basel.jpg";
   return `<a class="series-tile" href="${href}"><div class="media"><img src="${img}" alt=""><span class="scrim"></span></div><div class="copy"><p class="eyebrow-pill">${s.kicker}</p><h3>${s.title}</h3><span>${s.count}</span></div></a>`;
 }
 function featuredSeries() {
