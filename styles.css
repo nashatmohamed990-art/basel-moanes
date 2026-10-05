@@ -379,3 +379,5 @@ dialog::backdrop { background: #060a09cc; }
 
 #player-audio { width: 100%; margin: 12px 0 4px; }
 .player-frame[hidden] { display: none !important; }
+
+.split-title { margin: 22px 0 10px; font-size: 1.25rem; }

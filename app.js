@@ -34,33 +34,30 @@ function escapeHtml(value) {
 }
 function kindLabel(item) { return item.kind === "lesson" ? "مجلس تدبر" : "تلاوة"; }
 function card(item) {
-  const on = savedIds().has(item.id);
   return `<article class="ep-card">
     <button class="media" type="button" data-play="${item.id}">
       <img src="${thumb(item.id)}" alt="">
       <span class="play-mark" aria-hidden="true">▶</span>
       <span class="dur">${escapeHtml(item.duration || "")}</span>
     </button>
-    <p class="ep-meta">${kindLabel(item)}</p>
+    <p class="ep-meta">${item.audio ? "تسجيل صوتي" : kindLabel(item)}</p>
     <h3>${escapeHtml(item.title)}</h3>
-    <p>${escapeHtml(item.note || item.source || "قناة باسل مؤنس")}</p>
-    <button class="save${on ? " on" : ""}" type="button" data-save="${item.id}">${on ? "محفوظ" : "احفظ"}</button>
+    <p>${escapeHtml(item.audio ? "تسجيل صوتي" : (item.note || item.source || "يوتيوب"))}</p>
   </article>`;
 }
 function row(item) {
-  const on = savedIds().has(item.id);
   return `<article class="list-row">
     <button class="media" type="button" data-play="${item.id}"><img src="${thumb(item.id)}" alt=""></button>
     <div>
-      <p class="ep-meta">${kindLabel(item)} · ${escapeHtml(item.duration || "")}</p>
+      <p class="ep-meta">${item.audio ? "تسجيل صوتي" : kindLabel(item)} · ${escapeHtml(item.duration || "")}</p>
       <h3>${escapeHtml(item.title)}</h3>
-      <p>${escapeHtml(item.note || item.source || "قناة باسل مؤنس")}</p>
+      <p>${escapeHtml(item.audio ? "تسجيل صوتي" : (item.note || item.source || "يوتيوب"))}</p>
     </div>
-    <button class="save${on ? " on" : ""}" type="button" data-save="${item.id}">${on ? "محفوظ" : "احفظ"}</button>
   </article>`;
 }
 const SERIES = [
-  { id: "tilawa", title: "التلاوات", kicker: "السلسلة الأبرز", count: "13 تلاوة", blurb: "سور بصوته، كما نُشرت على القناة.", image: "re9whwL7Oik" },
+  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "7 تسجيلات", blurb: "سور بصوته، ملفات صوتية على الموقع.", image: "" },
+  { id: "tilawa", title: "فيديوهات التلاوة", kicker: "يوتيوب", count: "13 تلاوة", blurb: "سور كما نُشرت على يوتيوب.", image: "re9whwL7Oik" },
   { id: "lessons", title: "مجالس التدبر", kicker: "سلسلة", count: "7 مجالس", blurb: "مجالس القصص، وكيف نتدبر القرآن، وسمعنا وأطعنا.", image: "XZU50DA4_1I" },
   { id: "morning", title: "أذكار الصباح", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد الفجر حتى الضحى.", href: "practice.html#morning" },
   { id: "evening", title: "أذكار المساء", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد العصر إلى الليل.", href: "practice.html#evening" },
@@ -73,11 +70,14 @@ function seriesTile(s) {
 }
 function featuredSeries() {
   const s = SERIES[0];
-  return `<a class="featured" href="series.html?s=tilawa"><div class="media"><img src="${thumb(s.image)}" alt=""><span class="scrim"></span></div><div class="copy"><p class="eyebrow-pill">${s.kicker}</p><h3>${s.title}</h3><p>${s.blurb}</p><span class="btn btn-glass">عرض الحلقات</span></div></a>`;
+  return `<a class="featured" href="series.html?s=audio"><div class="media"><img src="${thumb(s.image)}" alt=""><span class="scrim"></span></div><div class="copy"><p class="eyebrow-pill">${s.kicker}</p><h3>${s.title}</h3><p>${s.blurb}</p><span class="btn btn-glass">عرض الحلقات</span></div></a>`;
 }
+function audios() { return allItems().filter((i) => i.audio); }
+function videos() { return allItems().filter((i) => !i.audio); }
 function itemsFor(id) {
-  if (id === "tilawa") return allItems().filter((i) => i.kind === "tilawa");
-  if (id === "lessons") return allItems().filter((i) => i.kind === "lesson");
+  if (id === "audio") return audios();
+  if (id === "tilawa") return videos().filter((i) => i.kind === "tilawa");
+  if (id === "lessons") return videos().filter((i) => i.kind === "lesson");
   return [];
 }
 function openItem(id) {
@@ -130,7 +130,9 @@ function renderSearch() {
   const box = document.getElementById("grid");
   if (!box) return;
   const items = visible();
-  box.innerHTML = items.map(row).join("");
+  const a = items.filter((i) => i.audio);
+  const v = items.filter((i) => !i.audio);
+  box.innerHTML = `<h2 class="split-title">التسجيلات الصوتية</h2>${a.map(row).join("") || "<p class='muted'>لا توجد تسجيلات.</p>"}<h2 class="split-title">فيديوهات يوتيوب</h2>${v.map(row).join("") || "<p class='muted'>لا توجد فيديوهات.</p>"}`;
   const empty = document.getElementById("empty");
   if (empty) empty.hidden = items.length !== 0;
 }
@@ -145,10 +147,12 @@ function renderLibrary() {
 function renderHome() {
   const series = document.getElementById("home-series");
   if (series) series.innerHTML = featuredSeries() + `<div class="series-rail">${SERIES.slice(1).map(seriesTile).join("")}</div>`;
-  const latest = document.getElementById("latest");
-  if (latest) latest.innerHTML = allItems().slice(0, 8).map(card).join("");
-  const popular = document.getElementById("popular");
-  if (popular) popular.innerHTML = allItems().filter((i) => i.kind === "tilawa").slice(0, 8).map(card).join("");
+  const audioBox = document.getElementById("audio-list");
+  if (audioBox) audioBox.innerHTML = audios().map(card).join("");
+  const videoBox = document.getElementById("video-list");
+  if (videoBox) videoBox.innerHTML = videos().filter((i) => i.kind === "tilawa").slice(0, 8).map(card).join("");
+  const lessonBox = document.getElementById("lesson-list");
+  if (lessonBox) lessonBox.innerHTML = videos().filter((i) => i.kind === "lesson").map(card).join("");
 }
 function renderSeries() {
   const grid = document.getElementById("series-grid");
@@ -166,7 +170,8 @@ function renderSeries() {
   if (title) title.textContent = chosen.title;
   if (lede) lede.textContent = chosen.blurb;
   grid.innerHTML = "";
-  document.getElementById("series-items").innerHTML = itemsFor(id).map(row).join("");
+  const list = itemsFor(id);
+  document.getElementById("series-items").innerHTML = list.map(row).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>";
 }
 function todayKey() { return new Date().toISOString().slice(0, 10); }
 function dhikrState() {
@@ -239,12 +244,7 @@ document.body.addEventListener("click", (event) => {
   const saveBtn = event.target.closest("[data-save]");
   const dhikr = event.target.closest("[data-dhikr]");
   if (play) openItem(play.dataset.play);
-  if (saveBtn) {
-    const id = saveBtn.dataset.save;
-    const ids = load(SAVED_KEY) || [];
-    save(SAVED_KEY, ids.includes(id) ? ids.filter((x) => x !== id) : ids.concat(id));
-    renderHome(); renderSearch(); renderLibrary(); renderSeries();
-  }
+  if (saveBtn) return;
   if (dhikr && typeof ADHKAR !== "undefined") {
     const item = Object.values(ADHKAR).flat().find((entry) => entry.id === dhikr.dataset.dhikr);
     if (!item) return;
