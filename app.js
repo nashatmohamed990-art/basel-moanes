@@ -217,7 +217,19 @@ function initTasbih() {
   const paint = () => {
     document.getElementById("bead-count").textContent = ar.format(bead);
     document.getElementById("bead-label").textContent = phrase;
+    document.getElementById("bead-of").textContent = target ? "من " + ar.format(target) : "مفتوح";
     document.getElementById("bead").classList.toggle("done", Boolean(target) && bead >= target);
+    const box = document.getElementById("misbaha-beads");
+    const total = 11;
+    const progress = target ? Math.min(bead, target) / target : (bead % 33) / 33;
+    const filled = Math.round(progress * total);
+    box.innerHTML = Array.from({length: total}, (_, i) => {
+      const angle = Math.PI * (0.12 + 0.76 * (i / (total - 1)));
+      const x = 50 + Math.cos(Math.PI - angle) * 42;
+      const y = 58 - Math.sin(angle) * 46;
+      const cls = i === 5 ? "pearl sep" : "pearl" + (i < filled ? " on" : "");
+      return `<span class="${cls}" style="left:${x}%;top:${y}%"></span>`;
+    }).join("");
     save(TASBIH_KEY, { phrase, target, bead });
   };
   phraseBox.addEventListener("click", (event) => {

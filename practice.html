@@ -62,8 +62,12 @@
       <button class="chip" type="button" data-target="0">مفتوح</button>
     </div>
     <div class="tasbih">
-      <button class="bead" id="bead" type="button"><span id="bead-count">٠</span></button>
-      <p id="bead-label" class="muted"></p>
+      <button class="misbaha" id="bead" type="button" aria-label="سبحة">
+        <span class="misbaha-beads" id="misbaha-beads"></span>
+        <span class="misbaha-count" id="bead-count">٠</span>
+        <span class="misbaha-of" id="bead-of"></span>
+      </button>
+      <p id="bead-label" class="bead-label"></p>
       <button class="btn btn-quiet" id="bead-reset" type="button">صفّر السبحة</button>
     </div>
   </section>
