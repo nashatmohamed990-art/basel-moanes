@@ -17,7 +17,7 @@ function savedIds() { return new Set(load(SAVED_KEY) || []); }
 function extras() { return load(EXTRA_KEY) || []; }
 function allItems() { return CATALOG.concat(extras()); }
 function byId(id) { return allItems().find((item) => item.id === id); }
-function thumb(id) { return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+function thumb(id) { const item = byId(id); if (item && item.audio) return "hero.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
 function minutes(value) {
   const parts = String(value || "0").split(":").map(Number);
   if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
@@ -86,7 +86,25 @@ function openItem(id) {
   currentId = id;
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
-  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
+  let audio = document.getElementById("player-audio");
+  if (item.audio) {
+    frame.hidden = true;
+    frame.removeAttribute("src");
+    if (!audio) {
+      audio = document.createElement("audio");
+      audio.id = "player-audio";
+      audio.controls = true;
+      audio.autoplay = true;
+      frame.insertAdjacentElement("afterend", audio);
+    }
+    audio.hidden = false;
+    audio.src = item.audio;
+    audio.play().catch(function () {});
+  } else {
+    if (audio) { audio.pause(); audio.hidden = true; audio.removeAttribute("src"); }
+    frame.hidden = false;
+    frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
+  }
   if (!player.open) player.showModal();
   renderResume();
 }
@@ -261,7 +279,7 @@ document.getElementById("player-next")?.addEventListener("click", () => {
 });
 document.getElementById("resume-play")?.addEventListener("click", () => openItem(load(LAST_KEY)));
 document.getElementById("resume-hide")?.addEventListener("click", () => { localStorage.removeItem(LAST_KEY); renderResume(); });
-player?.addEventListener("close", () => { frame.src = ""; currentId = ""; renderResume(); });
+player?.addEventListener("close", () => { frame.src = ""; const audio = document.getElementById("player-audio"); if (audio) { audio.pause(); audio.removeAttribute("src"); } currentId = ""; renderResume(); });
 player?.addEventListener("click", (event) => { if (event.target === player) player.close(); });
 document.getElementById("add-form")?.addEventListener("submit", (event) => {
   event.preventDefault();

@@ -376,3 +376,6 @@ dialog::backdrop { background: #060a09cc; }
   .list-row { grid-template-columns: 112px 1fr; }
   .list-row .save { grid-column: 2; }
 }
+
+#player-audio { width: 100%; margin: 12px 0 4px; }
+.player-frame[hidden] { display: none !important; }
