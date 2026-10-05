@@ -88,7 +88,37 @@ function itemsFor(id) {
 function openItem(id) {
   const item = byId(id);
   if (!item) return;
-  if (item.external) { window.open(item.external, "_blank", "noopener"); return; }
+  if (item.external) {
+    currentId = id;
+    save(LAST_KEY, id);
+    playerTitle.textContent = item.title;
+    frame.hidden = true;
+    frame.removeAttribute("src");
+    let audio = document.getElementById("player-audio");
+    if (!audio) {
+      audio = document.createElement("audio");
+      audio.id = "player-audio";
+      audio.controls = true;
+      audio.autoplay = true;
+      frame.insertAdjacentElement("afterend", audio);
+    }
+    audio.hidden = false;
+    audio.removeAttribute("src");
+    if (!player.open) player.showModal();
+    const recitation = item.external.split("/").pop();
+    fetch("/api/midad?id=" + encodeURIComponent(recitation))
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.url) throw new Error("missing");
+        audio.src = data.url;
+        audio.play().catch(function () {});
+      })
+      .catch(function () {
+        playerTitle.textContent = item.title + " — تعذر تشغيل التسجيل";
+      });
+    renderResume();
+    return;
+  }
   currentId = id;
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
