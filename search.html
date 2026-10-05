@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>باسل مؤنس | صدقة جارية</title>
+  <title>بحث | باسل مؤنس</title>
   <meta name="description" content="مساحة يبقى فيها صوت باسل مؤنس: تلاوات، مجالس تدبر، أذكار وسبحة. صدقة جارية." />
   <meta name="theme-color" content="#0c1210" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%231b5a4f' width='64' height='64' rx='14'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='32' fill='%23e6ba76' font-family='serif'%3Eب%3C/text%3E%3C/svg%3E" />
@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body data-page="home">
+<body data-page="search">
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html"><i>ب</i> باسل مؤنس</a>
@@ -31,43 +31,19 @@
   </header>
   <main>
 
-<section class="hero">
-  <div class="hero-media"><img src="hero.jpg" alt="مصحف على رحل"></div>
-  <span class="scrim"></span>
-  <span class="hero-glow"></span>
-  <div class="container hero-copy">
-    <p class="glass-pill">تلاوات باسل مؤنس</p>
-    <h1>مساحة يبقى فيها صوت باسل مؤنس</h1>
-    <p class="lede">تلاواته ومجالس تدبره كما نُشرت، ومعها أذكار الصباح والمساء وسبحة تُدار باليد. مكان واحد يُرجع إليه ويُنتفع به.</p>
-    <div class="hero-actions">
-      <button class="btn btn-solid" type="button" data-play="re9whwL7Oik">استمع لأحدث تلاوة</button>
-      <a class="btn btn-glass" href="series.html">تصفّح كل السلاسل</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat"><div><b>20</b><span>مادة</span></div></div>
-      <div class="hero-stat"><div><b>13</b><span>تلاوة</span></div></div>
-      <div class="hero-stat"><div><b>7</b><span>مجالس</span></div></div>
-    </div>
+<section class="page container">
+  <p class="kicker">بحث</p>
+  <h1 class="page-title">ابحث في التلاوات</h1>
+  <div class="searchbar"><input id="q" type="search" placeholder="اسم السورة أو المجلس" /></div>
+  <div class="chips">
+    <button class="chip on" type="button" data-filter="all">الكل</button>
+    <button class="chip" type="button" data-filter="tilawa">تلاوة</button>
+    <button class="chip" type="button" data-filter="lesson">تدبر</button>
+    <button class="chip" type="button" data-filter="short">أقل من ١٠ دقائق</button>
   </div>
+  <div id="grid" class="list"></div>
+  <p id="empty" class="empty" hidden>لا توجد نتيجة بهذا الاسم.</p>
 </section>
-<section class="section"><div class="container">
-  <div class="section-head"><div><p class="kicker">سلاسله</p><h2>ابدأ من سلسلة</h2></div><a class="section-link" href="series.html">كل السلاسل</a></div>
-  <div id="home-series"></div>
-</div></section>
-<section class="section"><div class="container">
-  <div class="section-head"><div><p class="kicker">الجديد</p><h2>أحدث التلاوات</h2></div><a class="section-link" href="search.html">ابحث في التلاوات</a></div>
-  <div id="latest" class="ep-rail"></div>
-</div></section>
-<section class="section"><div class="container">
-  <div class="section-head"><div><p class="kicker">على يوتيوب</p><h2>الأكثر استماعًا</h2></div></div>
-  <div id="popular" class="ep-rail"></div>
-</div></section>
-<section class="section"><div class="container">
-  <div class="band">
-    <div><p class="kicker">المكتبة</p><h2>احفظ ما تريد العودة إليه</h2><p class="muted">احفظ التلاوة، ودوّن ملاحظتك، وأكمل من حيث توقفت. الحفظ يبقى على هذا الجهاز.</p></div>
-    <a class="btn btn-brand" href="library.html">اذهب إلى مكتبتي</a>
-  </div>
-</div></section>
 
   </main>
   <footer class="container foot"><span>صدقة جارية عن باسل مؤنس · رحمه الله</span><span>يُنتفع به ولا يُباع</span></footer>
