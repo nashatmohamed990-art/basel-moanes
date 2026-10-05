@@ -63,6 +63,7 @@ const SERIES = [
   { id: "lessons", title: "دروس متفرقة", kicker: "دروس", count: "15 درس", blurb: "دروس ووقفات من القناة.", image: "AZNnQhRHdFA" },
   { id: "sadaq", title: "وصدق الله ورسوله", kicker: "سلسلة", count: "3 حلقات", blurb: "سلسلة وصدق الله ورسوله.", image: "I8ttP8KFM48" },
   { id: "clips", title: "مقاطع", kicker: "مقاطع", count: "5 مقاطع", blurb: "مقاطع قصيرة من القناة.", image: "Lpmq1uj7tJc" },
+  { id: "midad", title: "مصحف مداد", kicker: "صوت", count: "70 سورة", blurb: "التسجيلات كما نشرت على مداد.", image: "" },
   { id: "morning", title: "أذكار الصباح", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد الفجر حتى الضحى.", href: "practice.html#morning" },
   { id: "evening", title: "أذكار المساء", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد العصر إلى الليل.", href: "practice.html#evening" },
   { id: "tasbih", title: "السبحة", kicker: "عدّ", count: "٣٣ / ١٠٠", blurb: "سبحان الله، والحمد، والتكبير.", href: "practice.html#tasbih" }
@@ -87,6 +88,7 @@ function itemsFor(id) {
 function openItem(id) {
   const item = byId(id);
   if (!item) return;
+  if (item.external) { window.open(item.external, "_blank", "noopener"); return; }
   currentId = id;
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
