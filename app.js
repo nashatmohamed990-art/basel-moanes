@@ -146,9 +146,9 @@ function renderHome() {
   const series = document.getElementById("home-series");
   if (series) series.innerHTML = featuredSeries() + `<div class="series-rail">${SERIES.slice(1).map(seriesTile).join("")}</div>`;
   const latest = document.getElementById("latest");
-  if (latest) latest.innerHTML = allItems().slice(0, 6).map(card).join("");
+  if (latest) latest.innerHTML = allItems().slice(0, 8).map(card).join("");
   const popular = document.getElementById("popular");
-  if (popular) popular.innerHTML = allItems().filter((i) => i.kind === "tilawa").slice(0, 6).map(card).join("");
+  if (popular) popular.innerHTML = allItems().filter((i) => i.kind === "tilawa").slice(0, 8).map(card).join("");
 }
 function renderSeries() {
   const grid = document.getElementById("series-grid");

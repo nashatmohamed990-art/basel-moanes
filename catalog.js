@@ -1,5 +1,11 @@
 const CATALOG = [
   { id: "audio-nas", title: "تلاوة سورة الناس", kind: "tilawa", duration: "0:32", audio: "audio/surat-an-nas.mp3", note: "تسجيل صوتي" },
+  { id: "audio-falaq", title: "تلاوة سورة الفلق", kind: "tilawa", duration: "0:24", audio: "audio/surat-al-falaq.mp3", note: "تسجيل صوتي" },
+  { id: "audio-ikhlas", title: "تلاوة سورة الإخلاص", kind: "tilawa", duration: "0:13", audio: "audio/surat-al-ikhlas.mp3", note: "تسجيل صوتي" },
+  { id: "audio-kafirun", title: "تلاوة سورة الكافرون", kind: "tilawa", duration: "0:31", audio: "audio/surat-al-kafirun.mp3", note: "تسجيل صوتي" },
+  { id: "audio-maun", title: "تلاوة سورة الماعون", kind: "tilawa", duration: "0:38", audio: "audio/surat-al-maun.mp3", note: "تسجيل صوتي" },
+  { id: "audio-quraysh", title: "تلاوة سورة قريش", kind: "tilawa", duration: "0:23", audio: "audio/surat-quraysh.mp3", note: "تسجيل صوتي" },
+  { id: "audio-asr", title: "تلاوة سورة العصر", kind: "tilawa", duration: "0:18", audio: "audio/surat-al-asr.mp3", note: "تسجيل صوتي" },
   { id: "re9whwL7Oik", title: "تلاوة سورة التوبة", kind: "tilawa", duration: "49:25", note: "من أكثر تلاواته استماعًا" },
   { id: "t47CORsmCRU", title: "تلاوة سورة القصص", kind: "tilawa", duration: "39:52" },
   { id: "JhoUVobUUvc", title: "تلاوة سورة يونس", kind: "tilawa", duration: "38:06" },
