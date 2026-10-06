@@ -200,13 +200,7 @@ function openItem(id) {
   if (dock) dock.hidden = true;
   const audio = document.getElementById("player-audio");
   if (audio) { audio.pause(); audio.removeAttribute("src"); }
-  const poster = document.getElementById("player-poster");
-  if (poster) poster.hidden = true;
-  frame.hidden = false;
-  frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
-  const yt = document.getElementById("player-youtube");
-  if (yt) { yt.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id); yt.textContent = "كمّل على يوتيوب"; }
-  if (!player.open) player.showModal();
+  showStage(item);
   renderResume();
 }
 function renderResume() {
@@ -274,7 +268,7 @@ function renderSeries() {
   const list = itemsFor(id);
   document.getElementById("series-items").innerHTML = `<div class="waie-start"><i></i><span>بداية السلسلة · ${ar.format(list.length)}</span></div><div class="waie-list">${list.map(waieRow).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>"}</div>`;
   const play = params.get("play");
-  if (play && byId(play)) openItem(play);
+  if (play && byId(play) && play !== currentId) openItem(play);
 }
 function todayKey() { return new Date().toISOString().slice(0, 10); }
 function dhikrState() {
@@ -418,3 +412,51 @@ renderSeries();
 renderSearch();
 renderAdhkar();
 renderResume();
+
+function showStage(item) {
+  let stage = document.getElementById("stage");
+  if (!stage) {
+    stage = document.createElement("section");
+    stage.id = "stage";
+    stage.innerHTML = '<div class="stage-actions"><button type="button" id="stage-listen">استماع</button><button type="button" id="stage-watch" class="on">مشاهدة</button><a id="stage-ytlink" target="_blank" rel="noopener">كمّل على يوتيوب</a><button type="button" id="stage-close">×</button></div><div class="stage-frame"><iframe id="stage-yt" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="origin"></iframe></div>';
+    document.body.appendChild(stage);
+    stage.querySelector("#stage-watch").onclick = () => stage.classList.remove("audio");
+    stage.querySelector("#stage-listen").onclick = () => stage.classList.add("audio");
+    stage.querySelector("#stage-close").onclick = () => { stage.hidden = true; stage.querySelector("iframe").removeAttribute("src"); currentId = ""; };
+  }
+  stage.hidden = false;
+  stage.querySelector("#stage-ytlink").href = "https://www.youtube.com/watch?v=" + encodeURIComponent(item.id);
+  const frame = stage.querySelector("iframe");
+  if (!frame.src.includes(item.id)) frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(item.id) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+  if (player?.open) player.close();
+}
+function bootPage() {
+  renderHome();
+  renderSeries();
+  renderSearch();
+  renderAdhkar();
+  renderResume();
+}
+async function softGo(url) {
+  const res = await fetch(url);
+  const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+  const next = doc.querySelector("main");
+  const main = document.querySelector("main");
+  if (!next || !main) { location.href = url; return; }
+  main.replaceWith(next);
+  document.title = doc.title;
+  document.body.dataset.page = doc.body.dataset.page || "";
+  history.pushState({}, "", url);
+  window.scrollTo(0, 0);
+  bootPage();
+}
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a");
+  if (!link || link.target || event.metaKey || event.ctrlKey) return;
+  const url = new URL(link.href, location.href);
+  if (url.origin !== location.origin) return;
+  if (!url.pathname.endsWith(".html") && url.pathname !== "/") return;
+  event.preventDefault();
+  softGo(url.href);
+});
+window.addEventListener("popstate", () => softGo(location.href));
