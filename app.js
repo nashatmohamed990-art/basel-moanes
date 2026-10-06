@@ -17,7 +17,7 @@ function savedIds() { return new Set(load(SAVED_KEY) || []); }
 function extras() { return load(EXTRA_KEY) || []; }
 function allItems() { return CATALOG.concat(extras()); }
 function byId(id) { return allItems().find((item) => item.id === id); }
-function thumb(id) { const item = byId(id); if (item && item.audio) return "hero.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
+function thumb(id) { const item = byId(id); if (!id || id === "audio-cover" || (item && item.audio)) return "audio-cover.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
 function minutes(value) {
   const parts = String(value || "0").split(":").map(Number);
   if (parts.length === 3) return parts[0] * 60 + parts[1] + parts[2] / 60;
@@ -56,7 +56,7 @@ function row(item) {
   </article>`;
 }
 const SERIES = [
-  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "7 تسجيلات", blurb: "ملفات صوتية على الموقع.", image: "" },
+  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "تسجيلات", blurb: "ملفات صوتية على الموقع.", image: "audio-cover" },
   { id: "tilawa", title: "تلاوات يوتيوب", kicker: "يوتيوب", count: "73 تلاوة", blurb: "قائمة التلاوات على القناة.", image: "re9whwL7Oik" },
   { id: "qasas", title: "تدبر سورة القصص", kicker: "سلسلة", count: "11 مجلس", blurb: "سلسلة تدبر سورة القصص.", image: "xMwATKRljuc" },
   { id: "tadabbur", title: "تدبر", kicker: "سلسلة", count: "14 حلقة", blurb: "تدبر قصار السور.", image: "wuGaXVbdo4w" },
