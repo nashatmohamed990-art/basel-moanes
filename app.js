@@ -404,18 +404,3 @@ document.getElementById("add-form")?.addEventListener("submit", (event) => {
   note.textContent = "أُضيف إلى مكتبتك على هذا الجهاز.";
   renderLibrary();
 });
-document.getElementById("copy-dua")?.addEventListener("click", async () => {
-  const text = document.getElementById("dua").textContent;
-  try { await navigator.clipboard.writeText(text); document.getElementById("copy-dua").textContent = "نُسخ الدعاء"; }
-  catch { document.getElementById("copy-dua").textContent = "انسخ النص يدويًا"; }
-});
-document.querySelectorAll("[data-nav]").forEach((link) => {
-  if (link.dataset.nav === page) link.classList.add("on");
-});
-renderHome();
-renderSeries();
-renderSearch();
-renderLibrary();
-renderAdhkar();
-initTasbih();
-renderResume();
