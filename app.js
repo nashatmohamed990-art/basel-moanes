@@ -199,7 +199,7 @@ function openItem(id) {
   frame.hidden = false;
   frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
   const yt = document.getElementById("player-youtube");
-  if (yt) yt.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
+  if (yt) { yt.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id); yt.textContent = "كمّل على يوتيوب"; }
   if (!player.open) player.showModal();
   renderResume();
 }
