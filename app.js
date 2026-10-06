@@ -437,7 +437,7 @@ function bootPage() {
   renderAdhkar();
   renderResume();
 }
-async function softGo(url) {
+async function softGo(url, push) {
   const res = await fetch(url);
   const doc = new DOMParser().parseFromString(await res.text(), "text/html");
   const next = doc.querySelector("main");
@@ -446,7 +446,7 @@ async function softGo(url) {
   main.replaceWith(next);
   document.title = doc.title;
   document.body.dataset.page = doc.body.dataset.page || "";
-  history.pushState({}, "", url);
+  if (push) history.pushState({}, "", url);
   window.scrollTo(0, 0);
   bootPage();
 }
@@ -457,6 +457,6 @@ document.addEventListener("click", (event) => {
   if (url.origin !== location.origin) return;
   if (!url.pathname.endsWith(".html") && url.pathname !== "/") return;
   event.preventDefault();
-  softGo(url.href);
+  softGo(url.href, true);
 });
-window.addEventListener("popstate", () => softGo(location.href));
+window.addEventListener("popstate", () => softGo(location.href, false));
