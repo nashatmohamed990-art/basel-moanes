@@ -264,20 +264,7 @@ function renderSeries() {
   if (lede) lede.textContent = chosen.blurb;
   grid.innerHTML = "";
   const list = itemsFor(id);
-  const done = new Set(load("basel-moanes-done") || []);
-  const heard = list.filter((item) => done.has(item.id)).length;
-  const pct = list.length ? Math.round((heard / list.length) * 100) : 0;
-  const dots = Array.from({length: Math.min(list.length, 18)}, (_, i) => `<i class="${i < Math.round(pct / 100 * Math.min(list.length, 18)) ? "on" : ""}"></i>`).join("");
-  document.getElementById("series-items").innerHTML = `
-    <div class="path-progress">
-      <div><b>${ar.format(pct)}%</b><span>مكتمل</span></div>
-      <div><b>أكملت ${ar.format(heard)} من ${ar.format(list.length)} حلقة</b><span class="path-dots">${dots}</span></div>
-    </div>
-    <div class="path-start"><span>بداية السلسلة</span><i></i></div>
-    <div class="path">${list.map((item) => `<a class="path-item${done.has(item.id) ? " done" : ""}" href="series.html?s=${id}&play=${encodeURIComponent(item.id)}">
-      <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.audio ? "تسجيل صوتي" : "شاهد على يوتيوب")}</p><em>${escapeHtml(item.duration || "")}</em></div>
-      <span class="media"><img src="${thumb(item.id)}" alt=""><b>▶</b></span>
-    </a>`).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>"}</div>`;
+  document.getElementById("series-items").innerHTML = list.map(row).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>";
   const play = params.get("play");
   if (play && byId(play)) openItem(play);
 }
