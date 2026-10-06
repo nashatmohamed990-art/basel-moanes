@@ -511,3 +511,14 @@ dialog::backdrop { background: #060a09cc; }
 .player-poster { position: relative; display: block; aspect-ratio: 16/9; background: #000; }
 .player-poster img { width: 100%; height: 100%; object-fit: cover; }
 .player-poster span { position: absolute; inset: auto 16px 16px auto; background: #fff; color: #111; border-radius: 999px; padding: 10px 14px; font-weight: 800; }
+
+.waie-start { display: flex; align-items: center; gap: 10px; color: #b8883d; font-weight: 800; margin: 18px 0; }
+.waie-start i { width: 28px; height: 28px; border: 2px solid #e4c27a; border-radius: 50%; }
+.waie-list { display: grid; gap: 22px; position: relative; }
+.waie-list::before { content: ""; position: absolute; top: 8px; bottom: 8px; inset-inline-end: 78px; border-inline-end: 2px dashed #e4c27a; }
+.waie-ep { display: grid; grid-template-columns: 1fr 156px; gap: 14px; align-items: center; width: 100%; border: 0; background: transparent; color: inherit; text-align: start; cursor: pointer; position: relative; }
+.waie-ep b { display: block; font-size: 1.05rem; }
+.waie-ep .copy span, .waie-ep em { display: block; margin-top: 6px; color: var(--muted); font-style: normal; }
+.waie-ep .shot { position: relative; aspect-ratio: 16/10; border-radius: 18px; overflow: hidden; background: #145247; }
+.waie-ep img { width: 100%; height: 100%; object-fit: cover; }
+.waie-ep i { position: absolute; inset: 0; margin: auto; width: 42px; height: 42px; border-radius: 50%; background: #fff; color: #145247; display: grid; place-items: center; font-style: normal; }

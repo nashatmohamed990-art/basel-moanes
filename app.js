@@ -52,6 +52,12 @@ function card(item) {
     <p>${escapeHtml(item.audio ? "تسجيل صوتي" : (item.note || item.source || "يوتيوب"))}</p>
   </a>`;
 }
+function waieRow(item) {
+  return `<button class="waie-ep" type="button" data-play="${item.id}">
+    <span class="copy"><b>${escapeHtml(item.title)}</b><span>${item.audio ? "تسجيل صوتي" : "شاهد التلاوة"}</span><em>${escapeHtml(item.duration || "")}</em></span>
+    <span class="shot"><img src="${thumb(item.id)}" alt=""><i>▶</i></span>
+  </button>`;
+}
 function row(item) {
   return `<article class="list-row">
     <button class="media" type="button" data-play="${item.id}"><img src="${thumb(item.id)}" alt=""></button>
@@ -266,7 +272,7 @@ function renderSeries() {
   if (lede) lede.textContent = chosen.blurb;
   grid.innerHTML = "";
   const list = itemsFor(id);
-  document.getElementById("series-items").innerHTML = list.map(row).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>";
+  document.getElementById("series-items").innerHTML = `<div class="waie-start"><i></i><span>بداية السلسلة · ${ar.format(list.length)}</span></div><div class="waie-list">${list.map(waieRow).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>"}</div>`;
   const play = params.get("play");
   if (play && byId(play)) openItem(play);
 }
