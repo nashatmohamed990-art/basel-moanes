@@ -461,3 +461,33 @@ body[data-page="home"] .header-inner {
 .hero-face .hero-copy { color: #fff; padding-bottom: 64px; }
 .hero-face h1, .hero-face .lede { color: #fff; }
 .hero-face .glass-pill, .hero-face .hero-stats, .hero-face .btn-glass { background: #ffffff22; color: #fff; border-color: #ffffff44; }
+
+.topics-page { padding: 28px 0 40px; }
+.topics-hero { display: grid; gap: 22px; margin-bottom: 34px; }
+.chapter-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.chapter-list a { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px dotted var(--line); color: inherit; text-decoration: none; }
+.chapter-list b { color: #b8883d; font-size: 1.1rem; }
+.chapter-list em { font-style: normal; color: var(--muted); }
+.topics-intro h1 { margin: 0 0 8px; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+.topics-stats { display: flex; gap: 10px; margin-top: 18px; }
+.topics-stats div { background: #fff; border-radius: 16px; padding: 10px 14px; min-width: 84px; box-shadow: var(--shadow-xs); }
+.topics-stats b { display: block; font-size: 1.3rem; }
+.topics-stats span { color: var(--muted); font-size: .8rem; }
+.bab { margin: 28px 0 40px; }
+.bab-head { display: flex; justify-content: space-between; gap: 12px; align-items: end; margin-bottom: 14px; }
+.bab-head h2 { margin: 0; font-size: 1.8rem; }
+.bab-head span { font-size: 3rem; color: #d7c39a; font-weight: 800; line-height: 1; }
+.bab-grid { display: grid; gap: 12px; }
+.topic-card { display: grid; gap: 8px; background: #fff; border-radius: 22px; padding: 18px; text-decoration: none; color: inherit; box-shadow: var(--shadow-xs); }
+.topic-card .ico { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; background: #eef4f2; color: #145247; font-weight: 800; }
+.topic-card p { margin: 0; color: var(--ink-soft); }
+.topic-card em { font-style: normal; color: var(--muted); font-size: .85rem; }
+.topic-card.feature { min-height: 280px; color: #fff; background-size: cover; background-position: center; justify-content: end; position: relative; overflow: hidden; }
+.topic-card.feature::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#0000, #08110fcc); }
+.topic-card.feature > * { position: relative; }
+.topic-card .pill, .topic-card .go { width: fit-content; border: 1px solid #fff6; border-radius: 999px; padding: 6px 10px; }
+@media (min-width: 860px) {
+  .topics-hero { grid-template-columns: 1fr 1fr; align-items: center; }
+  .bab-grid { grid-template-columns: 1.1fr 1fr 1fr; }
+  .topic-card.feature { grid-row: span 2; }
+}
