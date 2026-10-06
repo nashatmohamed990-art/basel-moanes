@@ -63,11 +63,11 @@ function row(item) {
   </article>`;
 }
 const SERIES = [
-  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "تسجيلات", blurb: "ملفات صوتية على الموقع.", image: "audio-cover" },
+  { id: "audio", title: "التسجيلات الصوتية", kicker: "صوت", count: "37 تسجيل", blurb: "ملفات صوتية على الموقع.", image: "audio-cover" },
   { id: "tilawa", title: "تلاوات يوتيوب", kicker: "يوتيوب", count: "73 تلاوة", blurb: "قائمة التلاوات على القناة.", image: "re9whwL7Oik" },
   { id: "qasas", title: "تدبر سورة القصص", kicker: "سلسلة", count: "11 مجلس", blurb: "سلسلة تدبر سورة القصص.", image: "xMwATKRljuc" },
   { id: "tadabbur", title: "تدبر", kicker: "سلسلة", count: "14 حلقة", blurb: "تدبر قصار السور.", image: "wuGaXVbdo4w" },
-  { id: "lessons", title: "دروس متفرقة", kicker: "دروس", count: "15 درس", blurb: "دروس ووقفات من القناة.", image: "AZNnQhRHdFA" },
+  { id: "lessons", title: "دروس متفرقة", kicker: "دروس", count: "44 مجلس", blurb: "دروس ووقفات من القناة.", image: "AZNnQhRHdFA" },
   { id: "sadaq", title: "وصدق الله ورسوله", kicker: "سلسلة", count: "3 حلقات", blurb: "سلسلة وصدق الله ورسوله.", image: "I8ttP8KFM48" },
   { id: "clips", title: "مقاطع", kicker: "مقاطع", count: "5 مقاطع", blurb: "مقاطع قصيرة من القناة.", image: "Lpmq1uj7tJc" },
   { id: "morning", title: "أذكار الصباح", kicker: "ذكر", count: "تُقال وحدها", blurb: "من بعد الفجر حتى الضحى.", href: "practice.html#morning" },
