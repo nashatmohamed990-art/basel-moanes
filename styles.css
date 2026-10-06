@@ -337,9 +337,16 @@ textarea { min-height: 90px; resize: vertical; }
 }
 .tabbar a {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 2px; font-size: .72rem; color: var(--muted); font-weight: 700;
+  gap: 4px; font-size: .68rem; color: #8d867c; font-weight: 700; text-decoration: none;
 }
-.tabbar a.on { color: var(--brand); }
+.tab-ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; }
+.tab-ico svg { width: 20px; height: 20px; fill: currentColor; }
+.tabbar a.on { color: #1b1408; }
+.tabbar a.on .tab-ico { background: #1b1408; color: #fff; }
+::view-transition-old(root) { animation: page-out .28s ease both; }
+::view-transition-new(root) { animation: page-in .32s ease both; }
+@keyframes page-out { to { opacity: 0; transform: translateY(8px); } }
+@keyframes page-in { from { opacity: 0; transform: translateY(10px); } }
 .foot {
   display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;
   color: var(--muted); font-size: .85rem; padding: 8px 0 24px;
