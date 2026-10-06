@@ -447,3 +447,5 @@ dialog::backdrop { background: #060a09cc; }
 #dock-play { background: #fff; color: #145247; font-size: 1.2rem; }
 #dock-repeat.on { background: #ffffff22; }
 @media (min-width: 760px) { .dock { bottom: 16px; width: min(560px, calc(100% - 32px)); margin-inline: auto; } }
+
+#player-youtube { color: #fff; font-weight: 800; text-decoration: none; margin-inline-end: 8px; }

@@ -188,7 +188,9 @@ function openItem(id) {
   const audio = document.getElementById("player-audio");
   if (audio) { audio.pause(); audio.removeAttribute("src"); }
   frame.hidden = false;
-  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0";
+  frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&modestbranding=1";
+  const yt = document.getElementById("player-youtube");
+  if (yt) yt.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
   if (!player.open) player.showModal();
   renderResume();
 }
