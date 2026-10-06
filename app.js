@@ -164,8 +164,8 @@ function bindDock() {
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration || !seek) return;
     seek.value = Math.floor((audio.currentTime / audio.duration) * 1000);
-    document.getElementById("dock-now").textContent = clock(audio.currentTime);
-    document.getElementById("dock-end").textContent = clock(audio.duration);
+    const now = document.getElementById("dock-now"); if (now) now.textContent = clock(audio.currentTime);
+    const end = document.getElementById("dock-end"); if (end) end.textContent = clock(audio.duration);
   });
   audio.addEventListener("play", () => { play.textContent = "Ⅱ"; });
   audio.addEventListener("pause", () => { play.textContent = "▶"; });
