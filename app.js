@@ -194,10 +194,13 @@ function openItem(id) {
   if (dock) dock.hidden = true;
   const audio = document.getElementById("player-audio");
   if (audio) { audio.pause(); audio.removeAttribute("src"); }
-  frame.hidden = false;
-  frame.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(id) + "?rel=0&modestbranding=1&playsinline=1";
+  const watch = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
   const yt = document.getElementById("player-youtube");
-  if (yt) yt.href = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
+  if (yt) { yt.href = watch; yt.textContent = "شاهد على يوتيوب"; }
+  const inApp = /WhatsApp|Telegram|Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent);
+  if (inApp) { window.open(watch, "_blank"); renderResume(); return; }
+  frame.hidden = false;
+  frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
   if (!player.open) player.showModal();
   renderResume();
 }
