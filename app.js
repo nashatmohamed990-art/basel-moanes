@@ -404,3 +404,9 @@ document.getElementById("add-form")?.addEventListener("submit", (event) => {
   note.textContent = "أُضيف إلى مكتبتك على هذا الجهاز.";
   renderLibrary();
 });
+
+renderHome();
+renderSeries();
+renderSearch();
+renderAdhkar();
+renderResume();
