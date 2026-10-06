@@ -472,7 +472,8 @@ dialog::backdrop { background: #060a09cc; }
   }
 }
 .hero-face { min-height: 100vh; background: #1a140e; }
-.hero-face .scrim { background: linear-gradient(180deg, #120e0a33 0%, #120e0a55 42%, #120e0ae6 100%); }
+.hero-face .scrim { background: linear-gradient(to left, #08110fcc 8%, #08110f88 42%, #08110f22 78%); }
+.hero-face .hero-media img { object-position: left center; }
 .hero-face .hero-copy { color: #fff; padding-bottom: 64px; }
 .hero-face h1, .hero-face .lede { color: #fff; }
 .hero-face .glass-pill, .hero-face .hero-stats, .hero-face .btn-glass { background: #ffffff22; color: #fff; border-color: #ffffff44; }
@@ -510,16 +511,3 @@ dialog::backdrop { background: #060a09cc; }
 .player-poster { position: relative; display: block; aspect-ratio: 16/9; background: #000; }
 .player-poster img { width: 100%; height: 100%; object-fit: cover; }
 .player-poster span { position: absolute; inset: auto 16px 16px auto; background: #fff; color: #111; border-radius: 999px; padding: 10px 14px; font-weight: 800; }
-
-.hero-portrait {
-  position: absolute; inset-inline-end: 0; bottom: 0; z-index: 1;
-  height: 92%; width: min(48vw, 620px);
-  object-fit: cover; object-position: center 18%;
-  mask-image: linear-gradient(to left, #000 46%, transparent 92%);
-  pointer-events: none;
-}
-.hero-face .hero-copy { z-index: 2; max-width: 640px; margin-inline-start: auto; }
-@media (max-width: 759px) {
-  .hero-portrait { height: 46%; width: 70%; opacity: .85; mask-image: linear-gradient(to top, #000 40%, transparent 95%); }
-  .hero-face .hero-copy { max-width: none; }
-}
