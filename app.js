@@ -197,10 +197,20 @@ function openItem(id) {
   const watch = "https://www.youtube.com/watch?v=" + encodeURIComponent(id);
   const yt = document.getElementById("player-youtube");
   if (yt) { yt.href = watch; yt.textContent = "شاهد على يوتيوب"; }
-  const inApp = /WhatsApp|Telegram|Instagram|FBAN|FBAV|Line\//i.test(navigator.userAgent);
-  if (inApp) { window.open(watch, "_blank"); renderResume(); return; }
-  frame.hidden = false;
-  frame.src = "https://www.youtube.com/embed/" + encodeURIComponent(id) + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+  frame.hidden = true;
+  frame.removeAttribute("src");
+  let poster = document.getElementById("player-poster");
+  if (!poster) {
+    poster = document.createElement("a");
+    poster.id = "player-poster";
+    poster.className = "player-poster";
+    poster.target = "_blank";
+    poster.rel = "noopener";
+    frame.insertAdjacentElement("afterend", poster);
+  }
+  poster.hidden = false;
+  poster.href = watch;
+  poster.innerHTML = '<img alt="" src="https://i.ytimg.com/vi/' + encodeURIComponent(id) + '/hqdefault.jpg"><span>شاهد على يوتيوب</span>';
   if (!player.open) player.showModal();
   renderResume();
 }
