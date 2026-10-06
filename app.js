@@ -33,17 +33,24 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;")
 }
 function kindLabel(item) { return item.kind === "lesson" ? "مجلس تدبر" : "تلاوة"; }
+function placeFor(item) {
+  if (item.audio) return "audio";
+  if (item.kind === "lesson") return "lessons";
+  if ((item.lists || []).includes("tilawa") || item.kind === "tilawa") return "tilawa";
+  return (item.lists || [])[0] || "tilawa";
+}
 function card(item) {
-  return `<article class="ep-card">
-    <button class="media" type="button" data-play="${item.id}">
+  const place = placeFor(item);
+  return `<a class="ep-card" href="series.html?s=${place}&play=${encodeURIComponent(item.id)}">
+    <span class="media">
       <img src="${thumb(item.id)}" alt="">
       <span class="play-mark" aria-hidden="true">▶</span>
       <span class="dur">${escapeHtml(item.duration || "")}</span>
-    </button>
+    </span>
     <p class="ep-meta">${item.audio ? "تسجيل صوتي" : kindLabel(item)}</p>
     <h3>${escapeHtml(item.title)}</h3>
     <p>${escapeHtml(item.audio ? "تسجيل صوتي" : (item.note || item.source || "يوتيوب"))}</p>
-  </article>`;
+  </a>`;
 }
 function row(item) {
   return `<article class="list-row">
@@ -258,6 +265,8 @@ function renderSeries() {
   grid.innerHTML = "";
   const list = itemsFor(id);
   document.getElementById("series-items").innerHTML = list.map(row).join("") || "<p class='muted'>لا توجد مواد في هذه السلسلة.</p>";
+  const play = params.get("play");
+  if (play && byId(play)) openItem(play);
 }
 function todayKey() { return new Date().toISOString().slice(0, 10); }
 function dhikrState() {
