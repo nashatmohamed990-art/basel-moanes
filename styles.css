@@ -457,11 +457,19 @@ dialog::backdrop { background: #060a09cc; }
 
 #player-youtube { color: #fff; font-weight: 800; text-decoration: none; margin-inline-end: 8px; }
 
-body[data-page="home"] .site-header { position: absolute; inset-inline: 0; top: 14px; z-index: 20; background: transparent; border: 0; }
-body[data-page="home"] .header-inner {
+.site-header { background: transparent; border: 0; }
+.header-inner {
   width: min(980px, calc(100% - 28px)); margin-inline: auto;
   background: color-mix(in srgb, #fff 88%, transparent);
   border-radius: 999px; padding: 8px 12px; box-shadow: 0 10px 30px #0c121033;
+  position: relative;
+}
+@media (min-width: 760px) {
+  .desk-nav {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+  }
 }
 .hero-face { min-height: 100vh; background: #1a140e; }
 .hero-face .scrim { background: linear-gradient(180deg, #120e0a33 0%, #120e0a55 42%, #120e0ae6 100%); }
