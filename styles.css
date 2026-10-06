@@ -472,8 +472,9 @@ dialog::backdrop { background: #060a09cc; }
   }
 }
 .hero-face { min-height: 100vh; background: #1a140e; }
-.hero-face .scrim { background: linear-gradient(to left, #08110fcc 8%, #08110f88 42%, #08110f22 78%); }
-.hero-face .hero-media img { object-position: left center; }
+.hero-face .scrim { background: linear-gradient(180deg, #08110fdd 0%, #08110f66 18%, #08110f00 42%), linear-gradient(to left, #08110fe6 0%, #08110f99 34%, #08110f00 62%); }
+.hero-face .hero-media img { object-position: 18% 72%; }
+.hero-face .hero-copy { margin-inline-start: auto; margin-inline-end: 0; text-align: right; max-width: min(520px, 46vw); }
 .hero-face .hero-copy { color: #fff; padding-bottom: 64px; }
 .hero-face h1, .hero-face .lede { color: #fff; }
 .hero-face .glass-pill, .hero-face .hero-stats, .hero-face .btn-glass { background: #ffffff22; color: #fff; border-color: #ffffff44; }
