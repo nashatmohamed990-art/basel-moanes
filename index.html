@@ -7,6 +7,10 @@
   <title>باسل مؤنس | صدقة جارية</title>
   <meta name="description" content="مساحة يبقى فيها صوت باسل مؤنس: تلاوات، مجالس تدبر، أذكار وسبحة. صدقة جارية." />
   <meta name="theme-color" content="#0c1210" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <style>[hidden]{display:none!important}</style>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%231b5a4f' width='64' height='64' rx='14'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='32' fill='%23e6ba76' font-family='serif'%3Eب%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,6 +30,7 @@
       </nav>
       <div class="header-actions">
         <a class="icon-btn" href="search.html" aria-label="البحث">⌕</a>
+        <button class="btn-login" type="button" data-install hidden>ثبّت</button>
         <a class="btn-login" href="dua.html">الدعاء</a>
       </div>
     </div>
@@ -92,5 +97,6 @@
   <script src="catalog.js?v=9"></script>
   <script src="adhkar.js"></script>
   <script src="app.js?v=9"></script>
+  <script src="pwa.js" defer></script>
 </body>
 </html>
