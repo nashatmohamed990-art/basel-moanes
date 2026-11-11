@@ -9,6 +9,7 @@ const frame = document.getElementById("player-frame");
 const playerTitle = document.getElementById("player-title");
 const ar = new Intl.NumberFormat("ar-EG");
 let currentId = "";
+let currentSrc = "";
 let filter = "all";
 
 function load(key) { try { return JSON.parse(localStorage.getItem(key) || "null"); } catch { return null; } }
@@ -17,6 +18,8 @@ function savedIds() { return new Set(load(SAVED_KEY) || []); }
 function extras() { return load(EXTRA_KEY) || []; }
 function allItems() { return CATALOG.concat(extras()); }
 function byId(id) { return allItems().find((item) => item.id === id); }
+// مصدر الصوت: ملف صوتي مباشر (audio) أو نسخة mp3 لفيديو يوتيوب (mp3)
+function srcOf(item) { return item ? (item.audio || item.mp3 || "") : ""; }
 function thumb(id) { const item = byId(id); if (!id || id === "audio-cover" || (item && item.audio)) return "audio-cover.jpg"; return "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg"; }
 function minutes(value) {
   const parts = String(value || "0").split(":").map(Number);
@@ -26,11 +29,11 @@ function minutes(value) {
 }
 function escapeHtml(value) {
   return String(value)
-    .replace(/&/g, "&")
-    .replace(/</g, "<")
-    .replace(/>/g, ">")
-    .replace(/"/g, "\"")
-    .replace(/'/g, "&#39;")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 function kindLabel(item) { return item.kind === "lesson" ? "مجلس تدبر" : "تلاوة"; }
 function placeFor(item) {
@@ -100,11 +103,13 @@ function itemsFor(id) {
 
 let repeatMode = "off";
 let speed = 1;
+let sleepMin = 0;
+let sleepTimer = null;
 function clock(value) {
   const sec = Math.max(0, Math.floor(value || 0));
   return ar.format(Math.floor(sec / 60)) + ":" + ar.format(sec % 60).padStart(2, "٠");
 }
-function audioQueue() { return allItems().filter((item) => item.audio); }
+function audioQueue() { return allItems().filter((item) => srcOf(item)); }
 function ensureAudio() {
   let audio = document.getElementById("player-audio");
   if (!audio) {
@@ -122,13 +127,30 @@ function showDock(title) {
   document.getElementById("dock-title").textContent = title;
   if (player?.open) player.close();
 }
+function setMediaSession(title, audio) {
+  if (!("mediaSession" in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: title,
+    artist: "باسل مؤنس",
+    artwork: [{ src: "icons/icon-512.png", sizes: "512x512", type: "image/png" }]
+  });
+  navigator.mediaSession.setActionHandler("play", () => audio.play());
+  navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+  navigator.mediaSession.setActionHandler("previoustrack", () => stepAudio(-1));
+  navigator.mediaSession.setActionHandler("nexttrack", () => stepAudio(1));
+  navigator.mediaSession.setActionHandler("seekbackward", () => { audio.currentTime = Math.max(0, audio.currentTime - 10); });
+  navigator.mediaSession.setActionHandler("seekforward", () => { audio.currentTime = Math.min(audio.duration || Infinity, audio.currentTime + 10); });
+}
 function playSrc(src, title) {
   const audio = ensureAudio();
+  currentSrc = src;
   showDock(title);
   audio.src = src;
   audio.playbackRate = speed;
   audio.play().catch(function () {});
+  setMediaSession(title, audio);
   document.getElementById("dock-play").textContent = "Ⅱ";
+  refreshDownloadBtn();
 }
 function stepAudio(dir) {
   const queue = audioQueue();
@@ -136,19 +158,73 @@ function stepAudio(dir) {
   const next = queue[index + dir] || queue[dir > 0 ? 0 : queue.length - 1];
   if (next) openItem(next.id);
 }
+
+// ===== تحميل للأوفلاين (يعمل للملفات الموجودة على نفس الموقع) =====
+function sameOrigin(src) { try { return new URL(src, location.href).origin === location.origin; } catch { return false; } }
+async function isDownloaded(src) {
+  if (!window.pwa || !sameOrigin(src)) return false;
+  try { const list = await window.pwa.list(); return list.includes(new URL(src, location.href).href); } catch { return false; }
+}
+async function refreshDownloadBtn() {
+  const btn = document.getElementById("dock-dl");
+  if (!btn) return;
+  if (!currentSrc || !window.pwa || !sameOrigin(currentSrc)) { btn.hidden = true; return; }
+  btn.hidden = false;
+  const done = await isDownloaded(currentSrc);
+  btn.classList.toggle("on", done);
+  btn.textContent = done ? "محمّل ✓" : "تحميل";
+}
+async function toggleDownload() {
+  const btn = document.getElementById("dock-dl");
+  if (!btn || !currentSrc) return;
+  const src = currentSrc;
+  btn.disabled = true;
+  try {
+    if (await isDownloaded(src)) { await window.pwa.remove(src); }
+    else { btn.textContent = "جارٍ التحميل…"; await window.pwa.download(src); }
+  } catch { btn.textContent = "تعذّر التحميل"; await new Promise((r) => setTimeout(r, 1500)); }
+  btn.disabled = false;
+  refreshDownloadBtn();
+}
+
 function bindDock() {
   const audio = ensureAudio();
   const play = document.getElementById("dock-play");
   const seek = document.getElementById("dock-seek");
   if (!play || play.dataset.bound) return;
   play.dataset.bound = "1";
+
+  // أزرار إضافية تُضاف تلقائيًا: تحميل + مؤقت نوم
+  const controls = document.querySelector("#dock .dock-controls");
+  const closeBtn = document.getElementById("dock-close");
+  if (controls && !document.getElementById("dock-sleep")) {
+    const dl = document.createElement("button");
+    dl.type = "button"; dl.id = "dock-dl"; dl.hidden = true; dl.textContent = "تحميل";
+    dl.setAttribute("aria-label", "تحميل للأوفلاين");
+    dl.addEventListener("click", toggleDownload);
+    const sl = document.createElement("button");
+    sl.type = "button"; sl.id = "dock-sleep"; sl.textContent = "نوم";
+    sl.setAttribute("aria-label", "مؤقت النوم");
+    sl.addEventListener("click", () => {
+      sleepMin = ({ 0: 15, 15: 30, 30: 60, 60: 0 })[sleepMin];
+      clearTimeout(sleepTimer);
+      if (sleepMin) sleepTimer = setTimeout(() => { audio.pause(); sleepMin = 0; sl.textContent = "نوم"; sl.classList.remove("on"); }, sleepMin * 60000);
+      sl.textContent = sleepMin ? ar.format(sleepMin) + " د" : "نوم";
+      sl.classList.toggle("on", Boolean(sleepMin));
+    });
+    controls.insertBefore(dl, closeBtn);
+    controls.insertBefore(sl, closeBtn);
+  }
+  const speedBtn = document.getElementById("dock-speed");
+  if (speedBtn) speedBtn.textContent = "×" + ar.format(speed);
+
   play.addEventListener("click", () => { if (audio.paused) audio.play(); else audio.pause(); });
   document.getElementById("dock-next")?.addEventListener("click", () => stepAudio(1));
   document.getElementById("dock-prev")?.addEventListener("click", () => stepAudio(-1));
   document.getElementById("dock-close")?.addEventListener("click", () => {
     audio.pause(); audio.removeAttribute("src");
     document.getElementById("dock").hidden = true;
-    currentId = ""; renderResume();
+    currentId = ""; currentSrc = ""; renderResume();
   });
   document.getElementById("dock-repeat")?.addEventListener("click", (event) => {
     repeatMode = repeatMode === "off" ? "one" : repeatMode === "one" ? "all" : "off";
@@ -156,7 +232,7 @@ function bindDock() {
     event.currentTarget.textContent = repeatMode === "one" ? "1" : "↻";
   });
   document.getElementById("dock-speed")?.addEventListener("click", (event) => {
-    speed = speed === 1 ? 1.25 : speed === 1.25 ? 1.5 : 1;
+    speed = speed === 1 ? 1.25 : speed === 1.25 ? 1.5 : speed === 1.5 ? 2 : 1;
     audio.playbackRate = speed;
     event.currentTarget.textContent = "×" + ar.format(speed);
   });
@@ -182,18 +258,22 @@ function bindDock() {
 function openItem(id) {
   const item = byId(id);
   if (!item) return;
-  if (item.audio) {
+  const src = srcOf(item);
+  if (src) {
     currentId = id;
     save(LAST_KEY, id);
     bindDock();
     frame.hidden = true;
     frame.removeAttribute("src");
     if (player?.open) player.close();
-    playSrc(item.audio, item.title);
+    const stage = document.getElementById("stage");
+    if (stage) { stage.hidden = true; stage.querySelector("iframe").removeAttribute("src"); }
+    playSrc(src, item.title);
     renderResume();
     return;
   }
   currentId = id;
+  currentSrc = "";
   save(LAST_KEY, id);
   playerTitle.textContent = item.title;
   const dock = document.getElementById("dock");
