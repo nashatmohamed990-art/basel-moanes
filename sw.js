@@ -1,5 +1,5 @@
 // Service worker: يحفظ هيكل الموقع للأوفلاين، ويحمّل الصوتيات عند الطلب فقط.
-const VER = "v1";
+const VER = "v2";
 const SHELL = "shell-" + VER;
 const AUDIO = "audio-v1"; // لا يُحذف عند تحديث النسخة
 const CORE = [
@@ -7,7 +7,8 @@ const CORE = [
   "about.html", "dua.html", "sources.html", "practice.html",
   "styles.css", "app.js", "catalog.js", "adhkar.js", "pwa.js",
   "audio-cover.jpg", "basel-portrait.jpg", "basel.jpg", "hero.jpg",
-  "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"
+  "manifest.webmanifest",
+  "icon-192 (1).png", "icon-512 (1).png"
 ];
 
 self.addEventListener("install", e => {
