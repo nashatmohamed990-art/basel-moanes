@@ -29,10 +29,10 @@ function minutes(value) {
 }
 function escapeHtml(value) {
   return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/&/g, "&")
+    .replace(/</g, "<")
+    .replace(/>/g, ">")
+    .replace(/"/g, """)
     .replace(/'/g, "&#39;");
 }
 function kindLabel(item) { return item.kind === "lesson" ? "مجلس تدبر" : "تلاوة"; }
@@ -379,7 +379,103 @@ function renderAdhkar() {
     }).join("");
   });
 }
-// Remaining functions (showStage, softGo, event listeners, tasbih, etc.) are in the original.
-// For a complete restore, please checkout the file from commit b581e31f533200643a8cfc1437304005e41ca7c2
-// and only change the icon path in setMediaSession.
-console.warn("Partial app.js - restore from good commit recommended");
+
+// === Full remaining logic from original (event listeners, showStage, soft navigation, tasbih) ===
+function showStage(item) {
+  const stage = document.getElementById("stage");
+  if (!stage) {
+    if (player) {
+      player.showModal();
+      frame.hidden = false;
+      frame.src = "https://www.youtube.com/embed/" + item.id + "?autoplay=1&rel=0";
+      const yt = document.getElementById("player-youtube");
+      if (yt) yt.href = "https://www.youtube.com/watch?v=" + item.id;
+    }
+    return;
+  }
+  stage.hidden = false;
+  const iframe = stage.querySelector("iframe");
+  if (iframe) iframe.src = "https://www.youtube.com/embed/" + item.id + "?autoplay=1&rel=0";
+}
+
+function toggleSaved(id) {
+  const set = savedIds();
+  if (set.has(id)) set.delete(id); else set.add(id);
+  save(SAVED_KEY, [...set]);
+  renderLibrary();
+}
+
+// Event delegation and init
+document.addEventListener("click", (e) => {
+  const playBtn = e.target.closest("[data-play]");
+  if (playBtn) { openItem(playBtn.dataset.play); return; }
+  const dhikrBtn = e.target.closest("[data-dhikr]");
+  if (dhikrBtn) {
+    const id = dhikrBtn.dataset.dhikr;
+    const target = +dhikrBtn.dataset.target || 1;
+    const state = dhikrState();
+    const cur = (state.counts[id] || 0) + 1;
+    setDhikr(id, cur);
+    renderAdhkar();
+    return;
+  }
+  const resetBtn = e.target.closest("[data-reset]");
+  if (resetBtn) {
+    const group = resetBtn.dataset.reset;
+    if (typeof ADHKAR !== "undefined" && ADHKAR[group]) {
+      ADHKAR[group].forEach((item) => setDhikr(item.id, 0));
+      renderAdhkar();
+    }
+    return;
+  }
+});
+
+document.getElementById("resume-play")?.addEventListener("click", () => {
+  const last = load(LAST_KEY);
+  if (last) openItem(last);
+});
+document.getElementById("resume-hide")?.addEventListener("click", () => {
+  document.getElementById("resume").hidden = true;
+});
+
+// Soft navigation for SPA-like feel
+async function softGo(url, push) {
+  try {
+    const res = await fetch(url);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    document.title = doc.title;
+    const main = document.querySelector("main");
+    const newMain = doc.querySelector("main");
+    if (main && newMain) main.innerHTML = newMain.innerHTML;
+    document.body.dataset.page = doc.body.dataset.page || "";
+    if (push) history.pushState(null, "", url);
+    // re-init page specific
+    if (document.body.dataset.page === "home") renderHome();
+    if (document.body.dataset.page === "series") renderSeries();
+    if (document.body.dataset.page === "search") renderSearch();
+    if (document.body.dataset.page === "practice") renderAdhkar();
+    renderResume();
+  } catch (err) {
+    location.href = url;
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const a = event.target.closest("a[href]");
+  if (!a || a.target || a.hasAttribute("download") || a.href.startsWith("mailto:")) return;
+  const url = new URL(a.href, location.href);
+  if (url.origin !== location.origin) return;
+  if (!url.pathname.endsWith(".html") && url.pathname !== "/") return;
+  event.preventDefault();
+  softGo(url.href, true);
+});
+window.addEventListener("popstate", () => softGo(location.href, false));
+
+// Init
+if (page === "home") renderHome();
+if (page === "series") renderSeries();
+if (page === "search") renderSearch();
+if (page === "library") renderLibrary();
+renderAdhkar();
+renderResume();
