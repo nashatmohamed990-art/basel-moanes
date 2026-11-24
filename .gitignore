@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Capacitor native projects (generated locally)
+android/
+ios/
+
+# Local env
+.env
+.env.*
+
+# Build
+dist/
+www/

@@ -1,0 +1,29 @@
+{
+  "appId": "com.baselmoanes.app",
+  "appName": "باسل مؤنس",
+  "webDir": ".",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#0c1210",
+      "showSpinner": false,
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP"
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0c1210"
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "backgroundColor": "#0c1210"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#0c1210"
+  }
+}
