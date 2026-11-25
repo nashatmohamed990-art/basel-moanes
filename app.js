@@ -56,10 +56,13 @@ function card(item) {
   </a>`;
 }
 function waieRow(item) {
-  return `<button class="waie-ep" type="button" data-play="${item.id}">
-    <span class="copy"><b>${escapeHtml(item.title)}</b><span>${item.audio ? "تسجيل صوتي" : "شاهد التلاوة"}</span><em>${escapeHtml(item.duration || "")}</em></span>
-    <span class="shot"><img src="${thumb(item.id)}" alt=""><i>▶</i></span>
-  </button>`;
+  return `<div class="waie-ep">
+    <button class="waie-main" type="button" data-play="${item.id}">
+      <span class="copy"><b>${escapeHtml(item.title)}</b><span>${item.audio ? "تسجيل صوتي" : "شاهد التلاوة"}</span><em>${escapeHtml(item.duration || "")}</em></span>
+      <span class="shot"><img src="${thumb(item.id)}" alt=""><i>▶</i></span>
+    </button>
+    ${item.audio ? `<button class="dl-chip" type="button" data-dl="${item.id}">⬇ تنزيل للاستماع أوفلاين</button>` : ""}
+  </div>`;
 }
 function row(item) {
   return `<article class="list-row">
@@ -68,6 +71,7 @@ function row(item) {
       <p class="ep-meta">${item.audio ? "تسجيل صوتي" : kindLabel(item)} · ${escapeHtml(item.duration || "")}</p>
       <h3>${escapeHtml(item.title)}</h3>
       <p>${escapeHtml(item.audio ? "تسجيل صوتي" : (item.note || item.source || "يوتيوب"))}</p>
+      ${item.audio ? `<button class="dl-chip" type="button" data-dl="${item.id}">⬇ تنزيل للاستماع أوفلاين</button>` : ""}
     </div>
   </article>`;
 }
@@ -184,6 +188,35 @@ async function toggleDownload() {
     else { btn.textContent = "جارٍ التحميل…"; await window.pwa.download(src); }
   } catch { btn.textContent = "تعذّر التحميل"; await new Promise((r) => setTimeout(r, 1500)); }
   btn.disabled = false;
+  refreshDownloadBtn();
+  refreshDlButtons();
+}
+
+// ===== أزرار تنزيل كل تلاوة من القائمة نفسها =====
+async function refreshDlButtons() {
+  const btns = document.querySelectorAll("[data-dl]");
+  if (!btns.length || !window.pwa) return;
+  let list = [];
+  try { list = await window.pwa.list(); } catch { return; }
+  btns.forEach((b) => {
+    const item = byId(b.dataset.dl);
+    if (!item) return;
+    const done = list.includes(new URL(srcOf(item), location.href).href);
+    b.classList.toggle("on", done);
+    b.textContent = done ? "✓ محفوظة — تعمل أوفلاين" : "⬇ تنزيل للاستماع أوفلاين";
+  });
+}
+async function toggleItemDownload(btn) {
+  const item = byId(btn.dataset.dl);
+  if (!item || !window.pwa) return;
+  const src = srcOf(item);
+  btn.disabled = true;
+  try {
+    if (btn.classList.contains("on")) { await window.pwa.remove(src); }
+    else { btn.textContent = "جارٍ التحميل…"; await window.pwa.download(src); }
+  } catch { btn.textContent = "تعذّر التحميل"; await new Promise((r) => setTimeout(r, 1500)); }
+  btn.disabled = false;
+  refreshDlButtons();
   refreshDownloadBtn();
 }
 
@@ -380,6 +413,65 @@ function renderAdhkar() {
   });
 }
 
+// ===== تبويبات صفحة الأذكار: الصباح / المساء / أخرى / السبحة =====
+function setAdhkarTab(name) {
+  document.querySelectorAll("[data-adhkar-tab]").forEach((b) => b.classList.toggle("on", b.dataset.adhkarTab === name));
+  document.querySelectorAll("[data-adhkar-section]").forEach((sec) => { sec.hidden = sec.dataset.adhkarSection !== name; });
+}
+function initPractice() {
+  renderAdhkar();
+  renderTasbih();
+  const hash = (location.hash || "").replace("#", "");
+  setAdhkarTab(["morning", "evening", "other", "tasbih"].includes(hash) ? hash : "morning");
+}
+
+// ===== السبحة الإلكترونية =====
+const TASBIH_PHRASES = ["سبحان الله", "الحمد لله", "الله أكبر", "لا إله إلا الله", "سبحان الله وبحمده", "سبحان الله العظيم", "أستغفر الله", "لا حول ولا قوة إلا بالله", "اللهم صلِّ وسلم على نبينا محمد"];
+function tasbihState() {
+  return Object.assign({ phrase: 0, count: 0, target: 33, rounds: 0 }, load(TASBIH_KEY) || {});
+}
+function renderTasbih() {
+  const bead = document.getElementById("bead");
+  if (!bead) return;
+  const s = tasbihState();
+  const phrases = document.getElementById("tasbih-phrases");
+  if (phrases) phrases.innerHTML = TASBIH_PHRASES.map((p, i) => `<button class="chip${i === s.phrase ? " on" : ""}" type="button" data-phrase="${i}">${p}</button>`).join("");
+  document.querySelectorAll(".tasbih-targets [data-target]").forEach((b) => b.classList.toggle("on", +b.dataset.target === s.target));
+  const ring = document.getElementById("misbaha-beads");
+  if (ring) {
+    const total = 33;
+    const frac = s.target > 0 ? s.count / s.target : (s.count % total) / total;
+    const lit = Math.round(frac * total);
+    let dots = "";
+    for (let i = 0; i < total; i++) {
+      const a = (i / total) * Math.PI * 2 - Math.PI / 2;
+      const x = 50 + 42 * Math.cos(a);
+      const y = 50 + 40 * Math.sin(a);
+      dots += `<span class="pearl${i < lit ? " lit" : ""}" style="left:${x}%;top:${y}%"></span>`;
+    }
+    ring.innerHTML = dots;
+  }
+  const countEl = document.getElementById("bead-count");
+  if (countEl) countEl.textContent = ar.format(s.count);
+  const ofEl = document.getElementById("bead-of");
+  if (ofEl) ofEl.textContent = s.target > 0 ? `من ${ar.format(s.target)}${s.rounds ? ` · أتممت ${ar.format(s.rounds)}` : ""}` : "عدّاد مفتوح";
+  const label = document.getElementById("bead-label");
+  if (label) label.textContent = TASBIH_PHRASES[s.phrase] || TASBIH_PHRASES[0];
+}
+function tapBead() {
+  const s = tasbihState();
+  s.count += 1;
+  if (s.target > 0 && s.count >= s.target) {
+    s.rounds += 1;
+    s.count = 0;
+    if (navigator.vibrate) navigator.vibrate([50, 40, 50]);
+    const bead = document.getElementById("bead");
+    if (bead) { bead.classList.add("done"); setTimeout(() => bead.classList.remove("done"), 450); }
+  }
+  save(TASBIH_KEY, s);
+  renderTasbih();
+}
+
 // === Full remaining logic from original (event listeners, showStage, soft navigation, tasbih) ===
 function showStage(item) {
   const stage = document.getElementById("stage");
@@ -407,6 +499,16 @@ function toggleSaved(id) {
 
 // Event delegation and init
 document.addEventListener("click", (e) => {
+  const dlBtn = e.target.closest("[data-dl]");
+  if (dlBtn) { toggleItemDownload(dlBtn); return; }
+  const tabBtn = e.target.closest("[data-adhkar-tab]");
+  if (tabBtn) { setAdhkarTab(tabBtn.dataset.adhkarTab); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  const phraseBtn = e.target.closest("[data-phrase]");
+  if (phraseBtn) { const s = tasbihState(); s.phrase = +phraseBtn.dataset.phrase; s.count = 0; save(TASBIH_KEY, s); renderTasbih(); return; }
+  const targetBtn = e.target.closest(".tasbih-targets [data-target]");
+  if (targetBtn) { const s = tasbihState(); s.target = +targetBtn.dataset.target; s.count = 0; save(TASBIH_KEY, s); renderTasbih(); return; }
+  if (e.target.closest("#bead")) { tapBead(); return; }
+  if (e.target.closest("#bead-reset")) { const s = tasbihState(); s.count = 0; s.rounds = 0; save(TASBIH_KEY, s); renderTasbih(); return; }
   const playBtn = e.target.closest("[data-play]");
   if (playBtn) { openItem(playBtn.dataset.play); return; }
   const dhikrBtn = e.target.closest("[data-dhikr]");
@@ -454,8 +556,9 @@ async function softGo(url, push) {
     if (document.body.dataset.page === "home") renderHome();
     if (document.body.dataset.page === "series") renderSeries();
     if (document.body.dataset.page === "search") renderSearch();
-    if (document.body.dataset.page === "practice") renderAdhkar();
+    if (document.body.dataset.page === "practice") initPractice();
     renderResume();
+    refreshDlButtons();
   } catch (err) {
     location.href = url;
   }
@@ -477,5 +580,6 @@ if (page === "home") renderHome();
 if (page === "series") renderSeries();
 if (page === "search") renderSearch();
 if (page === "library") renderLibrary();
-renderAdhkar();
+if (page === "practice") initPractice(); else renderAdhkar();
 renderResume();
+refreshDlButtons();

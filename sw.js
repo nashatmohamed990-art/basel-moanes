@@ -1,5 +1,5 @@
 // Service worker: يحفظ هيكل الموقع للأوفلاين، ويحمّل الصوتيات عند الطلب فقط.
-const VER = "v2";
+const VER = "v3";
 const SHELL = "shell-" + VER;
 const AUDIO = "audio-v1"; // لا يُحذف عند تحديث النسخة
 const CORE = [

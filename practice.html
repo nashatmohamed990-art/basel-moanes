@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body data-page="practice">
   <header class="site-header">
@@ -42,24 +42,24 @@
   <h1 class="page-title">أذكار وسبحة</h1>
   <p class="muted">اضغط البطاقة ليزيد العدّاد. يُحفظ تقدم اليوم على هذا الجهاز.</p>
   <div class="chips">
-    <a class="chip on" href="#morning">الصباح</a>
-    <a class="chip" href="#evening">المساء</a>
-    <a class="chip" href="#other">أذكار أخرى</a>
-    <a class="chip" href="#tasbih">السبحة</a>
+    <button class="chip on" type="button" data-adhkar-tab="morning">أذكار الصباح</button>
+    <button class="chip" type="button" data-adhkar-tab="evening">أذكار المساء</button>
+    <button class="chip" type="button" data-adhkar-tab="other">أذكار أخرى</button>
+    <button class="chip" type="button" data-adhkar-tab="tasbih">السبحة</button>
   </div>
-  <section id="morning" class="section" style="padding-top:8px">
+  <section id="morning" data-adhkar-section="morning" class="section" style="padding-top:8px">
     <div class="section-head"><h2>أذكار الصباح</h2><button class="btn btn-quiet" type="button" data-reset="morning">صفّر</button></div>
     <div id="morning-list" class="dhikr-list"></div>
   </section>
-  <section id="evening" class="section">
+  <section id="evening" data-adhkar-section="evening" class="section">
     <div class="section-head"><h2>أذكار المساء</h2><button class="btn btn-quiet" type="button" data-reset="evening">صفّر</button></div>
     <div id="evening-list" class="dhikr-list"></div>
   </section>
-  <section id="other" class="section">
+  <section id="other" data-adhkar-section="other" class="section">
     <div class="section-head"><h2>أذكار أخرى</h2><button class="btn btn-quiet" type="button" data-reset="other">صفّر</button></div>
     <div id="other-list" class="dhikr-list"></div>
   </section>
-  <section id="tasbih" class="section">
+  <section id="tasbih" data-adhkar-section="tasbih" class="section">
     <h2>السبحة</h2>
     <div id="tasbih-phrases" class="chips"></div>
     <div class="chips tasbih-targets">
@@ -110,9 +110,9 @@
     <div class="player-bar"><strong id="player-title"></strong><span><a id="player-youtube" href="#" target="_blank" rel="noopener">كمّل على يوتيوب</a><button type="button" id="player-next" aria-label="التالي">⟩</button><button type="button" id="player-close" onclick="this.closest('dialog').close()" aria-label="إغلاق">×</button></span></div>
     <iframe class="player-frame" id="player-frame" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
   </dialog>
-  <script src="catalog.js?v=10"></script>
+  <script src="catalog.js?v=11"></script>
   <script src="adhkar.js"></script>
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=11"></script>
   <script src="pwa.js" defer></script>
 </body>
 </html>
