@@ -78,6 +78,36 @@ jobs:
           npx cap add android
           npx cap sync android
 
+      - name: Apply app icon (Basel's photo)
+        # Launcher icons are generated from the repo's PWA icon
+        # (icon-512 (1).png, the portrait) so the app icon matches.
+        run: |
+          IMG=$(command -v magick || command -v convert)
+          ICON="icon-512 (1).png"
+          RES=android/app/src/main/res
+          for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
+            set -- $spec; D=$1; S=$2; C=$((S/2))
+            mkdir -p "$RES/mipmap-$D"
+            $IMG "$ICON" -resize ${S}x${S} "$RES/mipmap-$D/ic_launcher.png"
+            $IMG "$ICON" -resize ${S}x${S} -alpha set \
+              \( -size ${S}x${S} xc:none -fill white -draw "circle $C,$C $C,1" \) \
+              -compose DstIn -composite "$RES/mipmap-$D/ic_launcher_round.png"
+          done
+          mkdir -p "$RES/mipmap-xxxhdpi" "$RES/mipmap-anydpi-v26"
+          $IMG -size 432x432 xc:"#145247" "$RES/mipmap-xxxhdpi/ic_launcher_background.png"
+          $IMG "$ICON" -resize 308x308 -alpha set \
+            \( -size 308x308 xc:none -fill white -draw "circle 154,154 154,1" \) \
+            -compose DstIn -composite -background none -gravity center -extent 432x432 \
+            "$RES/mipmap-xxxhdpi/ic_launcher_foreground.png"
+          cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" << 'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@mipmap/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          XML
+          cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
