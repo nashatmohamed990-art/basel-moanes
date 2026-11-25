@@ -1,9 +1,10 @@
 {
   "appId": "com.baselmoanes.app",
   "appName": "باسل مؤنس",
-  "webDir": ".",
+  "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "hostname": "baselmoanes.app"
   },
   "plugins": {
     "SplashScreen": {
@@ -25,5 +26,6 @@
   "ios": {
     "contentInset": "automatic",
     "backgroundColor": "#0c1210"
-  }
+  },
+  "appendUserAgent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36"
 }

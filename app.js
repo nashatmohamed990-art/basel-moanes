@@ -149,6 +149,8 @@ function playSrc(src, title) {
   const audio = ensureAudio();
   currentSrc = src;
   showDock(title);
+  const art = document.getElementById("dock-art");
+  if (art) art.src = thumb(currentId);
   audio.src = src;
   audio.playbackRate = speed;
   audio.play().catch(function () {});
@@ -227,6 +229,19 @@ function bindDock() {
   if (!play || play.dataset.bound) return;
   play.dataset.bound = "1";
 
+  // غلاف ووقت للمشغّل (شكل أخضر/أبيض مرتب)
+  const dockEl = document.getElementById("dock");
+  if (dockEl && !document.getElementById("dock-art")) {
+    const art = document.createElement("img");
+    art.id = "dock-art"; art.alt = ""; art.src = "audio-cover.jpg";
+    dockEl.insertBefore(art, dockEl.firstChild);
+    const times = document.createElement("div");
+    times.className = "dock-times";
+    times.innerHTML = '<span id="dock-now">٠:٠٠</span><span id="dock-end">٠:٠٠</span>';
+    if (seek && seek.nextSibling) dockEl.insertBefore(times, seek.nextSibling);
+    else dockEl.appendChild(times);
+  }
+
   // أزرار إضافية تُضاف تلقائيًا: تحميل + مؤقت نوم
   const controls = document.querySelector("#dock .dock-controls");
   const closeBtn = document.getElementById("dock-close");
@@ -273,6 +288,7 @@ function bindDock() {
   audio.addEventListener("timeupdate", () => {
     if (!audio.duration || !seek) return;
     seek.value = Math.floor((audio.currentTime / audio.duration) * 1000);
+    seek.style.setProperty("--p", ((audio.currentTime / audio.duration) * 100).toFixed(1) + "%");
     const now = document.getElementById("dock-now"); if (now) now.textContent = clock(audio.currentTime);
     const end = document.getElementById("dock-end"); if (end) end.textContent = clock(audio.duration);
   });
@@ -479,7 +495,7 @@ function showStage(item) {
     if (player) {
       player.showModal();
       frame.hidden = false;
-      frame.src = "https://www.youtube.com/embed/" + item.id + "?autoplay=1&rel=0";
+      frame.src = "https://www.youtube-nocookie.com/embed/" + item.id + "?autoplay=1&rel=0&playsinline=1";
       const yt = document.getElementById("player-youtube");
       if (yt) yt.href = "https://www.youtube.com/watch?v=" + item.id;
     }
@@ -487,7 +503,7 @@ function showStage(item) {
   }
   stage.hidden = false;
   const iframe = stage.querySelector("iframe");
-  if (iframe) iframe.src = "https://www.youtube.com/embed/" + item.id + "?autoplay=1&rel=0";
+  if (iframe) iframe.src = "https://www.youtube-nocookie.com/embed/" + item.id + "?autoplay=1&rel=0&playsinline=1";
 }
 
 function toggleSaved(id) {
