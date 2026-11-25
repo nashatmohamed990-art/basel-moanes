@@ -106,10 +106,7 @@ jobs:
               circle(src.resize((s, s), Image.LANCZOS)).save(os.path.join(out, "ic_launcher_round.png"))
           os.makedirs(os.path.join(res, "mipmap-xxxhdpi"), exist_ok=True)
           Image.new("RGB", (432, 432), (20, 82, 71)).save(os.path.join(res, "mipmap-xxxhdpi", "ic_launcher_background.png"))
-          fg = Image.new("RGBA", (432, 432), (0, 0, 0, 0))
-          face = circle(src.resize((308, 308), Image.LANCZOS))
-          fg.paste(face, (62, 62), face)
-          fg.save(os.path.join(res, "mipmap-xxxhdpi", "ic_launcher_foreground.png"))
+          src.resize((432, 432), Image.LANCZOS).save(os.path.join(res, "mipmap-xxxhdpi", "ic_launcher_foreground.png"))
           os.makedirs(os.path.join(res, "mipmap-anydpi-v26"), exist_ok=True)
           xml = ('<?xml version="1.0" encoding="utf-8"?>\n'
                  '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
