@@ -18,6 +18,11 @@ on:
     paths-ignore:
       - "**.md"
 
+# Needed so the manual run can publish the APK as a Release asset,
+# which gives a direct, no-login, no-ZIP download link for the phone.
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -83,6 +88,17 @@ jobs:
           name: basel-moanes-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Publish APK as a direct-download Release (manual runs only)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk basel-moanes.apk
+          gh release create apk-latest basel-moanes.apk \
+            --title "باسل مؤنس — أحدث نسخة APK" \
+            --notes "Direct APK download: open this release on the phone and tap basel-moanes.apk to download and install. Rebuilt on every manual workflow run." \
+          || gh release upload apk-latest basel-moanes.apk --clobber
 
       - name: Build signed release AAB (only if signing secrets exist)
         env:
