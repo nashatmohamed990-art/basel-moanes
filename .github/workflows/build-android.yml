@@ -36,8 +36,17 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Verify Android SDK
+        # GitHub's ubuntu runners already ship the Android SDK; the old
+        # android-actions/setup-android step failed on this repo's first
+        # run, so just verify (and top up if ever missing) instead.
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls "$ANDROID_HOME/platforms" || true
+          if [ ! -d "$ANDROID_HOME/platforms/android-34" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+              "platforms;android-34" "build-tools;34.0.0"
+          fi
 
       - name: Install npm dependencies
         run: npm install
@@ -101,4 +110,3 @@ jobs:
           # 'warn' (not 'error'): without signing secrets there is no AAB,
           # and the run should still finish green with just the debug APK.
           if-no-files-found: warn
-
