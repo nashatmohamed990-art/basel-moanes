@@ -80,33 +80,49 @@ jobs:
 
       - name: Apply app icon (Basel's photo)
         # Launcher icons are generated from the repo's PWA icon
-        # (icon-512 (1).png, the portrait) so the app icon matches.
+        # (icon-512 (1).png, the portrait) with Python/Pillow —
+        # ImageMagick is not installed on current runner images.
         run: |
-          IMG=$(command -v magick || command -v convert)
-          ICON="icon-512 (1).png"
-          RES=android/app/src/main/res
-          for spec in "mdpi 48" "hdpi 72" "xhdpi 96" "xxhdpi 144" "xxxhdpi 192"; do
-            set -- $spec; D=$1; S=$2; C=$((S/2))
-            mkdir -p "$RES/mipmap-$D"
-            $IMG "$ICON" -resize ${S}x${S} "$RES/mipmap-$D/ic_launcher.png"
-            $IMG "$ICON" -resize ${S}x${S} -alpha set \
-              \( -size ${S}x${S} xc:none -fill white -draw "circle $C,$C $C,1" \) \
-              -compose DstIn -composite "$RES/mipmap-$D/ic_launcher_round.png"
-          done
-          mkdir -p "$RES/mipmap-xxxhdpi" "$RES/mipmap-anydpi-v26"
-          $IMG -size 432x432 xc:"#145247" "$RES/mipmap-xxxhdpi/ic_launcher_background.png"
-          $IMG "$ICON" -resize 308x308 -alpha set \
-            \( -size 308x308 xc:none -fill white -draw "circle 154,154 154,1" \) \
-            -compose DstIn -composite -background none -gravity center -extent 432x432 \
-            "$RES/mipmap-xxxhdpi/ic_launcher_foreground.png"
-          cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" << 'XML'
-          <?xml version="1.0" encoding="utf-8"?>
-          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-              <background android:drawable="@mipmap/ic_launcher_background"/>
-              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
-          </adaptive-icon>
-          XML
-          cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
+          python3 -m pip install --quiet pillow
+          cat > /tmp/gen_icons.py << 'PYEOF'
+          import os, sys
+          from PIL import Image, ImageDraw
+          icon_path = sys.argv[1]
+          res = sys.argv[2]
+          src = Image.open(icon_path).convert("RGB")
+          W, H = src.size
+          side = min(W, H)
+          src = src.crop(((W - side) // 2, (H - side) // 2, (W + side) // 2, (H + side) // 2))
+          def circle(im):
+              im = im.convert("RGBA")
+              m = Image.new("L", im.size, 0)
+              ImageDraw.Draw(m).ellipse((0, 0, im.size[0], im.size[1]), fill=255)
+              im.putalpha(m)
+              return im
+          for d, s in {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}.items():
+              out = os.path.join(res, "mipmap-" + d)
+              os.makedirs(out, exist_ok=True)
+              src.resize((s, s), Image.LANCZOS).save(os.path.join(out, "ic_launcher.png"))
+              circle(src.resize((s, s), Image.LANCZOS)).save(os.path.join(out, "ic_launcher_round.png"))
+          os.makedirs(os.path.join(res, "mipmap-xxxhdpi"), exist_ok=True)
+          Image.new("RGB", (432, 432), (20, 82, 71)).save(os.path.join(res, "mipmap-xxxhdpi", "ic_launcher_background.png"))
+          fg = Image.new("RGBA", (432, 432), (0, 0, 0, 0))
+          face = circle(src.resize((308, 308), Image.LANCZOS))
+          fg.paste(face, (62, 62), face)
+          fg.save(os.path.join(res, "mipmap-xxxhdpi", "ic_launcher_foreground.png"))
+          os.makedirs(os.path.join(res, "mipmap-anydpi-v26"), exist_ok=True)
+          xml = ('<?xml version="1.0" encoding="utf-8"?>\n'
+                 '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
+                 '    <background android:drawable="@mipmap/ic_launcher_background"/>\n'
+                 '    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>\n'
+                 '</adaptive-icon>\n')
+          for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
+              with open(os.path.join(res, "mipmap-anydpi-v26", name), "w") as f:
+                  f.write(xml)
+          print("icons written under", res)
+          PYEOF
+          python3 /tmp/gen_icons.py "icon-512 (1).png" android/app/src/main/res
+          ls android/app/src/main/res/mipmap-xxxhdpi/
 
       - name: Build debug APK
         working-directory: android
